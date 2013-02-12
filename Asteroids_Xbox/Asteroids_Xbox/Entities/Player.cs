@@ -10,13 +10,19 @@ namespace Asteroids_Xbox.Entities
 {
     class Player : Entity
     {
-        // Animation representing the player
+        /// <summary>
+        /// Animation representing the player
+        /// </summary>
         public Animation PlayerAnimation;
 
-        // State of the player
+        /// <summary>
+        /// State of the player
+        /// </summary>
         public bool Active;
 
-        // Amount of hit points that player has
+        /// <summary>
+        /// Amount of hit points that player has
+        /// </summary>
         public int Health;
 
         public int Lives;
@@ -43,20 +49,13 @@ namespace Asteroids_Xbox.Entities
         {
             this.graphicsDevice = graphicsDevice;
 
-            Animation animation = new Animation();
+            PlayerAnimation = new Animation();
             Texture2D playerTexture = content.Load<Texture2D>("shipAnimation");
-            animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, Color.White, 1f, true);
+            PlayerAnimation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, Color.White, 1f, true);
 
-            PlayerAnimation = animation;
-
-            // Set the player to be active
             Active = true;
-
-            // Set the player health
             Health = 100;
-
             Lives = 3;
-
             moveSpeed = 8.0f;
 
             Position = new Vector2
@@ -72,37 +71,37 @@ namespace Asteroids_Xbox.Entities
             PlayerAnimation.Position = Position;
             PlayerAnimation.Update(gameTime);
 
-            var currentKeyboardState = inputManager.CurrentKeyboardState;
-            var currentGamePadState = inputManager.CurrentGamePadState;
+            var keyboard = inputManager.CurrentKeyboardState;
+            var gamepad = inputManager.CurrentGamePadState;
 
             // Get Thumbstick Controls
             Move
             (
-                currentGamePadState.ThumbSticks.Left.X * moveSpeed,
-                -(currentGamePadState.ThumbSticks.Left.Y * moveSpeed)
+                gamepad.ThumbSticks.Left.X * moveSpeed,
+                -(gamepad.ThumbSticks.Left.Y * moveSpeed)
             );
 
             // Use the Keyboard / Dpad
-            if (currentKeyboardState.IsKeyDown(Keys.Left) ||
-                currentGamePadState.DPad.Left == ButtonState.Pressed)
+            if (keyboard.IsKeyDown(Keys.Left) ||
+                gamepad.DPad.Left == ButtonState.Pressed)
             {
                 Move(-moveSpeed, 0.0f);
             }
 
-            if (currentKeyboardState.IsKeyDown(Keys.Right) ||
-                currentGamePadState.DPad.Right == ButtonState.Pressed)
+            if (keyboard.IsKeyDown(Keys.Right) ||
+                gamepad.DPad.Right == ButtonState.Pressed)
             {
                 Move(moveSpeed, 0.0f);
             }
 
-            if (currentKeyboardState.IsKeyDown(Keys.Up) ||
-                currentGamePadState.DPad.Up == ButtonState.Pressed)
+            if (keyboard.IsKeyDown(Keys.Up) ||
+                gamepad.DPad.Up == ButtonState.Pressed)
             {
                 Move(0.0f, -moveSpeed);
             }
 
-            if (currentKeyboardState.IsKeyDown(Keys.Down) ||
-                currentGamePadState.DPad.Down == ButtonState.Pressed)
+            if (keyboard.IsKeyDown(Keys.Down) ||
+                gamepad.DPad.Down == ButtonState.Pressed)
             {
                 Move(0.0f, moveSpeed);
             }

@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Asteroids_Xbox.Manager;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Display the score for the player and their remaining lives
+    /// </summary>
     class ScoreDisplay : Entity
     {
         private SpriteFont font;

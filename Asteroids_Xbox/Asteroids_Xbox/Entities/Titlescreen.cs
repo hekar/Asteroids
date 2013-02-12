@@ -10,6 +10,9 @@ using Asteroids_Xbox.Manager;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Display and process the titlescreen
+    /// </summary>
     class Titlescreen : Entity
     {
         // Image used to display the static background
