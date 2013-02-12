@@ -11,14 +11,22 @@ namespace Asteroids_Xbox.Types
 {
     abstract class Entity : Initializable, Updatable, Drawable
     {
-        public void Move(float x, float y)
+        public virtual void Move(float x, float y)
         {
             this.Position = new Vector2(this.Position.X + x, this.Position.Y + y);
         }
 
-        public void Rotate(float angle)
+        public virtual void Rotate(float angle)
         {
-            this.Rotation = (Rotation + angle) % 360;
+            var nextRotation = Rotation + angle;
+            if (nextRotation > 0.0f)
+            {
+                this.Rotation = nextRotation % 360.0f;
+            }
+            else
+            {
+                this.Rotation = 360.0f + angle;
+            }
         }
 
         public abstract void Initialize(ContentManager content, GraphicsDevice graphicsDevice);
