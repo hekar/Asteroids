@@ -90,12 +90,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Types\Asteroid.cs" />
+    <Compile Include="Entities\Asteroid.cs" />
+    <Compile Include="Entities\Bullet.cs" />
+    <Compile Include="Entities\EnemyShip.cs" />
+    <Compile Include="Entities\ScoreDisplay.cs" />
+    <Compile Include="Entities\Titlescreen.cs" />
+    <Compile Include="Manager\AsteroidManager.cs" />
+    <Compile Include="Manager\EntityManager.cs" />
+    <Compile Include="Manager\InputManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Asteroids.cs" />
-    <Compile Include="Types\Animation.cs" />
-    <Compile Include="Types\Player.cs" />
+    <Compile Include="Entities\Animation.cs" />
+    <Compile Include="Types\Drawable.cs" />
+    <Compile Include="Types\Entity.cs" />
+    <Compile Include="Types\Initializable.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Types\Updatable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -103,8 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Asteroids_XboxContent\Asteroids_XboxContent.contentproj">
-      <Name>Asteroids_XboxContent</Name>
+      <Name>Asteroids_XboxContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{A167484E-E10D-4121-A3E5-E306A8DD36E5}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -2,10 +2,11 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Asteroids_Xbox.Types;
 
-namespace Asteroids_Xbox.Types
+namespace Asteroids_Xbox.Entities
 {
-    class Animation
+    class Animation : Drawable
     {
         // The image representing the collection of images used for animation
         Texture2D spriteStrip;
@@ -46,8 +47,11 @@ namespace Asteroids_Xbox.Types
         // Determines if the animation will keep playing or deactivate after one run
         public bool Looping;
 
-        // Width of a given frame
-        public Vector2 Position;
+        public Vector2 Position { get; set; }
+
+        public float Rotation { get; set; }
+
+        public float LayerDepth;
 
         public void Initialize(Texture2D texture, Vector2 position,
         int frameWidth, int frameHeight, int frameCount,
@@ -118,7 +122,7 @@ namespace Asteroids_Xbox.Types
             // Only draw the animation when we are active
             if (Active)
             {
-                spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color);
+                spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color, Rotation, Vector2.Zero, SpriteEffects.None, LayerDepth);
             }
         }
     }
