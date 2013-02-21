@@ -1,5 +1,9 @@
 using System;
 using Asteroids_Xbox.Types;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Asteroids_Xbox.Manager;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -8,19 +12,33 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class Bullet : Entity
     {
-        public override void Initialize(Microsoft.Xna.Framework.Content.ContentManager content, Microsoft.Xna.Framework.Graphics.GraphicsDevice graphicsDevice)
+        private Vector2 speed;
+        private Player player;
+        private Color BackgroundColor = Color.GhostWhite;
+
+        public Bullet(Player player, Vector2 speed, float rotation)
+        {
+            this.player = player;
+            this.speed = speed;
+            this.Rotation = rotation;
+        }
+
+        public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
         {
             throw new NotImplementedException();
         }
 
-        public override void Update(Manager.InputManager inputManager, Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(InputManager inputManager, GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // Move bullet
+            Forward(speed.X, speed.Y);
+
+            // TODO: Check collisions
         }
 
-        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.Draw(null, Position, BackgroundColor);
         }
     }
 }

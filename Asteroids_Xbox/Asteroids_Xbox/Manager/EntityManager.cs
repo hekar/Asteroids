@@ -11,11 +11,10 @@ namespace Asteroids_Xbox.Manager
 {
     class EntityManager
     {
-        private List<Entity> entities;
+        private readonly List<Entity> entities = new List<Entity>();
 
         public EntityManager()
         {
-            entities = new List<Entity>();
         }
 
         public void Add(Entity entity)

@@ -54,8 +54,8 @@ namespace Asteroids_Xbox.Entities
         public float LayerDepth;
 
         public void Initialize(Texture2D texture, Vector2 position,
-        int frameWidth, int frameHeight, int frameCount,
-        int frametime, Color color, float scale, bool looping)
+            int frameWidth, int frameHeight, int frameCount,
+            int frametime, Color color, float scale, bool looping)
         {
             // Keep a local copy of the values passed in
             this.color = color;
@@ -122,8 +122,13 @@ namespace Asteroids_Xbox.Entities
             // Only draw the animation when we are active
             if (Active)
             {
-                spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color, Rotation, Vector2.Zero, SpriteEffects.None, LayerDepth);
+                var rad = MathHelper.ToRadians(Rotation);
+                var origin = new Vector2(((float)FrameWidth) / 2, ((float)FrameHeight) / 2);
+                spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color,
+                    rad, origin, SpriteEffects.None, LayerDepth);
             }
         }
+
+
     }
 }

@@ -36,9 +36,9 @@ namespace Asteroids_Xbox
         {
             graphics = new GraphicsDeviceManager(this);
 
-            asteroidManager = new AsteroidManager();
             entityManager = new EntityManager();
             inputManager = new InputManager();
+            asteroidManager = new AsteroidManager(entityManager);
 
             Content.RootDirectory = "Content";
         }
@@ -48,9 +48,10 @@ namespace Asteroids_Xbox
         /// </summary>
         protected override void Initialize()
         {
+            entityManager.Add(new Background());
+
             // TODO: Move this code elsewhere
             player = new Player();
-            player.Score = 0;
             entityManager.Add(player);
 
             scoreDisplay = new ScoreDisplay(new List<Player>(new Player[] {player}));
@@ -78,7 +79,7 @@ namespace Asteroids_Xbox
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>Class1.cs
+        /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
@@ -97,7 +98,7 @@ namespace Asteroids_Xbox
             inputManager.PreviousGamePadState = inputManager.CurrentGamePadState;
             inputManager.CurrentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-            asteroidManager.Update(gameTime);
+            asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
             entityManager.Update(inputManager, gameTime);
 
             base.Update(gameTime);
@@ -111,7 +112,7 @@ namespace Asteroids_Xbox
         {
             GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             entityManager.Draw(spriteBatch);
             spriteBatch.End();
 

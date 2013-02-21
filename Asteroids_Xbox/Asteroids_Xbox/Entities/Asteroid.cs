@@ -12,18 +12,11 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class Asteroid : Entity
     {
-        /// <summary>
-        /// Animation representing the Asteroid
-        /// </summary>
-        public Animation AsteroidAnimation { get; set; }
+        private Animation Animation { get; set; }
 
         /// <summary>
-        /// The state of the Asteroid
-        /// </summary>
-        public bool Active { get; set; }
-
-        /// <summary>
-        /// The hit points of the Asteroid, if this goes to zero the Asteroid dies
+        /// The hit points of the Asteroid, if this goes to zero the Asteroid EXPPLODES INTO PIECES OF 
+        /// BORA DSAFOJSDAFJSADOFJASDOIFJASKDFJLAKSDJFLK;ASDJFKL;ASDJFKLASJDFKL;JASDKFL;JSADKLFJSKLAD;F
         /// </summary>
         public int Health { get; set; }
 
@@ -35,14 +28,14 @@ namespace Asteroids_Xbox.Entities
         /// <summary>
         /// The amount of score the Asteroid will give to the player
         /// </summary>
-        public int Value { get; set; }
+        public int ScoreWorth { get; set; }
 
         /// <summary>
         /// Get the width of the Asteroid
         /// </summary>
         public int Width
         {
-            get { return AsteroidAnimation.FrameWidth; }
+            get { return Animation.FrameWidth; }
         }
 
         /// <summary>
@@ -50,46 +43,47 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public int Height
         {
-            get { return AsteroidAnimation.FrameHeight; }
+            get { return Animation.FrameHeight; }
         }
-
-        /// <summary>
-        /// Speed at which the asteroid moves
-        /// </summary>
-        private float asteroidMoveSpeed;
 
         private readonly AsteroidManager asteroidManager;
         private readonly Player player;
+        private Texture2D asteroidTexture;
+        private string asteroidTextureName;
 
-        public Asteroid(AsteroidManager asteroidManager, Player player)
+        public Asteroid(AsteroidManager asteroidManager, Player player) : this(asteroidManager, player, "asteroidLarge")
+        {
+        }
+
+        public Asteroid(AsteroidManager asteroidManager, Player player, string asteroidTextureName)
         {
             this.asteroidManager = asteroidManager;
             this.player = player;
+            this.asteroidTextureName = asteroidTextureName;
         }
 
         public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
         {
             // TODO: Make asteroid animation
-            AsteroidAnimation = new Animation();
-            //asteroidTexture = Content.Load<Texture2D>("asteroidAnimation");
-            //AsteroidAnimation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, Color.White, 1f, true);
+            Animation = new Animation();
+            asteroidTexture = content.Load<Texture2D>(asteroidTextureName);
+            Animation.Initialize(asteroidTexture, Vector2.Zero, 
+                asteroidTexture.Width, asteroidTexture.Height, 1, 30, Color.White, 1f, false);
 
             Active = true;
             Health = 50;
             Damage = 100;
-            asteroidMoveSpeed = 6f;
-            Value = 100;
+            ScoreWorth = 100;
+
+            MoveSpeed = 5.0f;
+            MaxSpeed = MoveSpeed;
+            RotationSpeed = 15.0f;
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             // Implement asteroid random floating shit bzzzzzzz
-
-            // Update the position of the Animation
-            AsteroidAnimation.Position = Position;
-
-            // Update Animation
-            AsteroidAnimation.Update(gameTime);
+            // BZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
             // If the Asteroid is past the screen or its health reaches 0 then deactivate it
             if (Position.X < -Width || Health <= 0)
@@ -113,17 +107,29 @@ namespace Asteroids_Xbox.Entities
                     //explosionSound.Play();
 
                     //Add to the player's score
-                    player.Score += Value;
+                    player.Score += ScoreWorth;
                 }
 
                 asteroidManager.Remove(this);
             }
+            else
+            {
+                Rotation += RotationSpeed;
+                Animation.Rotation = Rotation;
+                Forward();
+            }
+
+            // Update the position of the Animation
+            Animation.Position = Position;
+
+            // Update Animation
+            Animation.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             // Draw the animation
-            AsteroidAnimation.Draw(spriteBatch);
+            Animation.Draw(spriteBatch);
         }
     }
 }

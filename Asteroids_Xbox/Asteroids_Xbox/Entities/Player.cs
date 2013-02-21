@@ -1,37 +1,26 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Asteroids_Xbox.Types;
-using Microsoft.Xna.Framework.Content;
 using Asteroids_Xbox.Manager;
+using Asteroids_Xbox.Types;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Asteroids_Xbox.Entities
 {
     class Player : Entity
     {
-        /// <summary>
-        /// Animation representing the player
-        /// </summary>
+        private const string PlayerTextureName = "shipAnimation";
+
+        private readonly Color BackgroundColor = Color.White;
+
         public Animation Animation;
 
-        /// <summary>
-        /// State of the player
-        /// </summary>
-        public bool Active;
-
-        /// <summary>
-        /// Amount of hit points that player has
-        /// </summary>
         public int Health;
 
         public int Lives;
 
         public int Score;
 
-        private Vector2 currentSpeed;
-        private float maxSpeed;
-        private float moveSpeed;
         private GraphicsDevice graphicsDevice;
 
         // Get the width of the player ship
@@ -46,21 +35,27 @@ namespace Asteroids_Xbox.Entities
             get { return Animation.FrameHeight; }
         }
 
-        // Initialize the player
+        // TODO: Pass in bullet
+        public Player()
+        {
+        }
+
         public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
         {
             this.graphicsDevice = graphicsDevice;
 
             Animation = new Animation();
-            Texture2D playerTexture = content.Load<Texture2D>("shipAnimation");
-            Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, Color.White, 1f, true);
+            Texture2D playerTexture = content.Load<Texture2D>(PlayerTextureName);
+            Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, BackgroundColor, 1f, true);
 
             Active = true;
             Health = 100;
+            Score = 0;
             Lives = 3;
-            moveSpeed = 8.0f;
-            maxSpeed = 10.0f;
-            currentSpeed = Vector2.Zero;
+            MoveSpeed = 8.0f;
+            MaxSpeed = 10.0f;
+            RotationSpeed = 5.0f;
+            CurrentSpeed = Vector2.Zero;
 
             Position = new Vector2
             (
@@ -69,7 +64,6 @@ namespace Asteroids_Xbox.Entities
             );
         }
 
-        // Update the player animation
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Animation.Position = Position;
@@ -85,51 +79,48 @@ namespace Asteroids_Xbox.Entities
             if (keyboard.IsKeyDown(Keys.Left) ||
                 gamepad.DPad.Left == ButtonState.Pressed)
             {
-                Rotate(-0.2f);
+                Rotate(-RotationSpeed);
             }
             else if (keyboard.IsKeyDown(Keys.Right) ||
                 gamepad.DPad.Right == ButtonState.Pressed)
             {
-                Rotate(0.2f);
+                Rotate(RotationSpeed);
             }
 
             if (keyboard.IsKeyDown(Keys.Up) ||
                 gamepad.DPad.Up == ButtonState.Pressed)
             {
-                Forward(-moveSpeed);
+                Forward();
             }
             else if (keyboard.IsKeyDown(Keys.Down) ||
                 gamepad.DPad.Down == ButtonState.Pressed)
             {
-                Forward(moveSpeed);
+                Backward();
             }
             else
             {
                 // Deccelerate...
-                currentSpeed.X *= 0.2f;
-                currentSpeed.Y *= 0.2f;
+                CurrentSpeed = new Vector2(CurrentSpeed.X / 1.15f, CurrentSpeed.Y / 1.15f);
             }
 
-            Move(currentSpeed.X, currentSpeed.Y);
+            Move(CurrentSpeed.X, CurrentSpeed.Y);
+
+            if (keyboard.IsKeyDown(Keys.Space) ||
+                gamepad.Buttons.A == ButtonState.Pressed)
+            {
+                FireBullet(CurrentSpeed);
+            }
         }
 
-        // Draw the player
         public override void Draw(SpriteBatch spriteBatch)
         {
             Animation.Draw(spriteBatch);
         }
 
-        public void Forward(float speed)
+        private Bullet FireBullet(Vector2 speed)
         {
-            double rad = Rotation * (Math.PI / 180);
-
-            float speedX = (float)Math.Sin(rad) * speed;
-            float speedY = (float)Math.Cos(rad) * speed;
-
-            var nextSpeedX = MathHelper.Clamp(currentSpeed.X + speedX, -maxSpeed, maxSpeed);
-            var nextSpeedY = MathHelper.Clamp(currentSpeed.Y + speedY, -maxSpeed, maxSpeed);
-
-            currentSpeed = new Vector2(nextSpeedX, nextSpeedY);
+            var bullet = new Bullet(this, speed, Rotation);
+            return bullet;
         }
 
         public override void Move(float x, float y)

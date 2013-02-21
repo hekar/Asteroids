@@ -15,6 +15,7 @@ namespace Asteroids_Xbox.Entities
         private SpriteFont font;
         private readonly List<Player> players = new List<Player>();
         private GraphicsDevice graphicsDevice;
+        private readonly Color FontColor = Color.FloralWhite;
 
         public ScoreDisplay(List<Player> players)
         {
@@ -37,11 +38,11 @@ namespace Asteroids_Xbox.Entities
             {
                 // Draw the score
                 spriteBatch.DrawString(font, "Score: " + player.Score,
-                    new Vector2(graphicsDevice.Viewport.X, graphicsDevice.Viewport.Y), Color.Black);
+                    new Vector2(graphicsDevice.Viewport.X, graphicsDevice.Viewport.Y), FontColor);
 
                 // Draw the lives of the player
                 spriteBatch.DrawString(font, "Lives: " + player.Lives,
-                    new Vector2(graphicsDevice.Viewport.X, graphicsDevice.Viewport.Y + 60), Color.White);    
+                    new Vector2(graphicsDevice.Viewport.X, graphicsDevice.Viewport.Y + 35), FontColor);    
             }
         }
     }

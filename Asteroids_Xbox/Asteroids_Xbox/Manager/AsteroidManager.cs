@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using Asteroids_Xbox.Entities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Manager
 {
     class AsteroidManager
     {
+        private EntityManager entityManager;
+
         // asteroids
         //Texture2D asteroidTexture; //To implement
         private List<Asteroid> asteroids;
@@ -17,47 +21,49 @@ namespace Asteroids_Xbox.Manager
         private TimeSpan asteroidSpawnTime;
         private TimeSpan previousSpawnTime;
 
-        public AsteroidManager()
+        public AsteroidManager(EntityManager entityManager)
         {
+            this.entityManager = entityManager;
+
             asteroids = new List<Asteroid>();
             // Set the time keepers to zero
             previousSpawnTime = TimeSpan.Zero;
             // Used to determine how fast asteroids spawns
             asteroidSpawnTime = TimeSpan.FromSeconds(.5f);
         }
-    
 
         // No asteroid texture and the asteroid class does not have the
         // algorythm for floating around the screen in place yet.
-        //private void AddAsteroid()
-        //{
-        //    // Create the animation object
-        //    Animation asteroidAnimation = new Animation();
-        //    // Initialize the animation with the correct animation information
-        //    asteroidAnimation.Initialize(asteroidTexture, Vector2.Zero, 10, 10, 8, 30, Color.White, 1f, true);
-        //    // Randomly generate the position of the asteroid
-        //    Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + asteroidTexture.Width / 2, random.Next(asteroidTexture.Height / 2, GraphicsDevice.Viewport.Height - asteroidTexture.Height));
-        //    // Create an asteroid
-        //    Asteroid asteroid = new Asteroid();
-        //    // Initialize the asteroid
-        //    asteroid.Initialize(asteroidAnimation, position);
-        //    // Add the asteroid to the active asteroids list
-        //    asteroids.Add(asteroid);
-        //}
+        public Asteroid CreateAsteroid(ContentManager content, GraphicsDevice graphicsDevice, Player player)
+        {
+            // Create an asteroid
+            Asteroid asteroid = new Asteroid(this, player);
+            asteroid.Initialize(content, graphicsDevice);
+
+            var rand = new Random();
+            // Randomly generate the position of the asteroid
+            asteroid.Position = new Vector2(graphicsDevice.Viewport.Width + asteroid.Width / 2,
+                rand.Next(asteroid.Height / 2, graphicsDevice.Viewport.Height - asteroid.Height));
+
+            asteroids.Add(asteroid);
+
+            return asteroid;
+        }
 
         public void Remove(Asteroid asteroid)
         {
             throw new NotImplementedException();
         }
 
-        internal void Update(GameTime gameTime)
+        public void Update(ContentManager content, GraphicsDevice graphicsDevice, Player player, GameTime gameTime)
         {
             // Spawn a new asteroid asteroid every 1.5 seconds
             if (gameTime.TotalGameTime - previousSpawnTime > asteroidSpawnTime)
             {
                 previousSpawnTime = gameTime.TotalGameTime;
                 // Add an asteroid
-                //AddAsteroid();
+                var asteroid = CreateAsteroid(content, graphicsDevice, player);
+                entityManager.Add(asteroid);
             }
         }
     }

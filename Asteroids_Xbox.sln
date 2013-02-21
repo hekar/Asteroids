@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids_XboxContent", "As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids_Windows", "Asteroids_Xbox\Asteroids_Xbox\Asteroids_Windows.csproj", "{2C4E6A5A-A69A-487A-A0DE-A4B98D762A70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids_Xbox_Settings", "Asteroids_Xbox_Settings\Asteroids_Xbox_Settings.csproj", "{613998DF-DC19-43DA-841B-ADDDB69723AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -49,6 +51,16 @@ Global
 		{2C4E6A5A-A69A-487A-A0DE-A4B98D762A70}.Release|x86.ActiveCfg = Release|x86
 		{2C4E6A5A-A69A-487A-A0DE-A4B98D762A70}.Release|x86.Build.0 = Release|x86
 		{2C4E6A5A-A69A-487A-A0DE-A4B98D762A70}.Release|Xbox 360.ActiveCfg = Release|x86
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|x86.ActiveCfg = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|x86.ActiveCfg = Release|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Xbox 360.Build.0 = Release|Xbox 360
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
