@@ -4,47 +4,73 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Asteroids_Xbox.Types;
 
-namespace Asteroids_Xbox.Entities
+namespace Asteroids_Xbox.Types
 {
     class Animation : Drawable
     {
-        // The image representing the collection of images used for animation
-        Texture2D spriteStrip;
+        /// <summary>
+        /// The image representing the collection of images used for animation
+        /// </summary>
+        private Texture2D spriteStrip;
 
-        // The scale used to display the sprite strip
-        float scale;
+        /// <summary>
+        /// The scale used to display the sprite strip
+        /// </summary>
+        private float scale;
 
-        // The time since we last updated the frame
-        int elapsedTime;
+        /// <summary>
+        /// The time since we last updated the frame
+        /// </summary>
+        private int elapsedTime;
 
-        // The time we display a frame until the next one
-        int frameTime;
+        /// <summary>
+        /// The time we display a frame until the next one
+        /// </summary>
+        private int frameTime;
 
-        // The number of frames that the animation contains
-        int frameCount;
+        /// <summary>
+        /// The number of frames that the animation contains
+        /// </summary>
+        private int frameCount;
 
-        // The index of the current frame we are displaying
-        int currentFrame;
+        /// <summary>
+        /// The index of the current frame we are displaying
+        /// </summary>
+        private int currentFrame;
 
-        // The color of the frame we will be displaying
-        Color color;
+        /// <summary>
+        /// The color of the frame we will be displaying
+        /// </summary>
+        private Color color;
 
-        // The area of the image strip we want to display
-        Rectangle sourceRect = new Rectangle();
+        /// <summary>
+        /// The area of the image strip we want to display
+        /// </summary>
+        private Rectangle sourceRect = new Rectangle();
 
-        // The area where we want to display the image strip in the game
-        Rectangle destinationRect = new Rectangle();
+        /// <summary>
+        /// The area where we want to display the image strip in the game
+        /// </summary>
+        private Rectangle destinationRect = new Rectangle();
 
-        // Width of a given frame
+        /// <summary>
+        /// Width of a given frame
+        /// </summary>
         public int FrameWidth;
 
-        // Height of a given frame
+        /// <summary>
+        /// Height of a given frame
+        /// </summary>
         public int FrameHeight;
 
-        // The state of the Animation
-        public bool Active;
+        /// <summary>
+        /// The state of the Animation
+        /// </summary>
+        public bool ShouldDraw;
 
-        // Determines if the animation will keep playing or deactivate after one run
+        /// <summary>
+        /// Determines if the animation will keep playing or deactivate after one run
+        /// </summary>
         public bool Looping;
 
         public Vector2 Position { get; set; }
@@ -53,11 +79,18 @@ namespace Asteroids_Xbox.Entities
 
         public float LayerDepth;
 
+        private bool initialized;
+
+        public Animation()
+        {
+            initialized = false;
+            ShouldDraw = false;
+        }
+
         public void Initialize(Texture2D texture, Vector2 position,
             int frameWidth, int frameHeight, int frameCount,
             int frametime, Color color, float scale, bool looping)
         {
-            // Keep a local copy of the values passed in
             this.color = color;
             this.FrameWidth = frameWidth;
             this.FrameHeight = frameHeight;
@@ -69,19 +102,25 @@ namespace Asteroids_Xbox.Entities
             Position = position;
             spriteStrip = texture;
 
-            // Set the time to zero
             elapsedTime = 0;
             currentFrame = 0;
+            LayerDepth = 0.0f;
 
-            // Set the Animation to active by default
-            Active = true;
+            ShouldDraw = true;
+            initialized = true;
         }
 
         public void Update(GameTime gameTime)
         {
             // Do not update the game if we are not active
-            if (Active == false)
+            if (!ShouldDraw)
+            {
                 return;
+            }
+            else if (!initialized)
+            {
+                throw new AnimationNotInitializedException("Animation must be initialized prior to updating");
+            }
 
             // Update the elapsed time
             elapsedTime += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -99,7 +138,7 @@ namespace Asteroids_Xbox.Entities
                     currentFrame = 0;
                     // If we are not looping deactivate the animation
                     if (Looping == false)
-                        Active = false;
+                        ShouldDraw = false;
                 }
 
                 // Reset the elapsed time to zero
@@ -110,25 +149,37 @@ namespace Asteroids_Xbox.Entities
             sourceRect = new Rectangle(currentFrame * FrameWidth, 0, FrameWidth, FrameHeight);
 
             // Grab the correct frame in the image strip by multiplying the currentFrame index by the frame width
-            destinationRect = new Rectangle((int)Position.X - (int)(FrameWidth * scale) / 2,
-            (int)Position.Y - (int)(FrameHeight * scale) / 2,
-            (int)(FrameWidth * scale),
-            (int)(FrameHeight * scale));
+            destinationRect = new Rectangle
+            (
+                (int)Position.X - (int)(FrameWidth * scale) / 2,
+                (int)Position.Y - (int)(FrameHeight * scale) / 2,
+                (int)(FrameWidth * scale),
+                (int)(FrameHeight * scale)
+            );
         }
 
-        // Draw the Animation Strip
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Only draw the animation when we are active
-            if (Active)
+            if (ShouldDraw)
             {
-                var rad = MathHelper.ToRadians(Rotation);
-                var origin = new Vector2(((float)FrameWidth) / 2, ((float)FrameHeight) / 2);
+                if (!initialized)
+                {
+                    throw new AnimationNotInitializedException("Animation must be initialized prior to drawing");
+                }
+
+                var radians = MathHelper.ToRadians(Rotation);
+                var center = new Vector2(((float)FrameWidth) / 2, ((float)FrameHeight) / 2);
+
                 spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color,
-                    rad, origin, SpriteEffects.None, LayerDepth);
+                    radians, center, SpriteEffects.None, LayerDepth);
             }
         }
+    }
 
-
+    public class AnimationNotInitializedException : Exception
+    {
+        public AnimationNotInitializedException() { }
+        public AnimationNotInitializedException(string message) : base(message) { }
+        public AnimationNotInitializedException(string message, Exception inner) : base(message, inner) { }
     }
 }

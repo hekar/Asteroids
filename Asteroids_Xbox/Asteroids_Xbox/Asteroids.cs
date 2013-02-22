@@ -86,7 +86,7 @@ namespace Asteroids_Xbox
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
+            // Hack: Exit game on Xbox 360
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 this.Exit();
@@ -110,9 +110,9 @@ namespace Asteroids_Xbox
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            spriteBatch.Begin();
             entityManager.Draw(spriteBatch);
             spriteBatch.End();
 

@@ -49,6 +49,6 @@ namespace Asteroids_Xbox.Manager
             {
                 entity.Draw(batch);
             }
-        }        
+        }
     }
 }

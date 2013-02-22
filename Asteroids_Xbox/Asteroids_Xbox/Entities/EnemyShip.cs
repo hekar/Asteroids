@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Asteroids_Xbox.Types;
+using Microsoft.Xna.Framework.Content;
+using Asteroids_Xbox.Manager;
+using Microsoft.Xna.Framework;
 
 namespace Asteroids_Xbox.Entities
 {
     /// <summary>
     /// TODO: Implement
     /// </summary>
-    class EnemyShip : Entity
+    class EnemyShip : AnimatedEntity
     {
-        public override void Initialize(Microsoft.Xna.Framework.Content.ContentManager content, Microsoft.Xna.Framework.Graphics.GraphicsDevice graphicsDevice)
+        public override void Load(ContentManager content)
         {
-            throw new NotImplementedException();
         }
 
-        public override void Update(Manager.InputManager inputManager, Microsoft.Xna.Framework.GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        public override void Update(InputManager inputManager, GameTime gameTime)
         {
             throw new NotImplementedException();
         }

@@ -10,10 +10,8 @@ namespace Asteroids_Xbox.Entities
     /// <summary>
     /// Asteroid floating in space
     /// </summary>
-    class Asteroid : Entity
+    class Asteroid : AnimatedEntity
     {
-        private Animation Animation { get; set; }
-
         /// <summary>
         /// The hit points of the Asteroid, if this goes to zero the Asteroid EXPPLODES INTO PIECES OF 
         /// BORA DSAFOJSDAFJSADOFJASDOIFJASKDFJLAKSDJFLK;ASDJFKL;ASDJFKLASJDFKL;JASDKFL;JSADKLFJSKLAD;F
@@ -31,19 +29,26 @@ namespace Asteroids_Xbox.Entities
         public int ScoreWorth { get; set; }
 
         /// <summary>
-        /// Get the width of the Asteroid
+        /// Is the asteroid dead?
         /// </summary>
-        public int Width
+        public bool Dead
         {
-            get { return Animation.FrameWidth; }
+            get
+            {
+                return Health <= 0;
+            }
         }
 
         /// <summary>
-        /// Get the height of the Asteroid
+        /// Is the asteroid offscreen?
         /// </summary>
-        public int Height
+        public bool Offscreen
         {
-            get { return Animation.FrameHeight; }
+            get
+            {
+                var offscreen = false;// !GraphicsDevice.Viewport.Bounds.Intersects(Bounds);
+                return offscreen;
+            }
         }
 
         private readonly AsteroidManager asteroidManager;
@@ -62,15 +67,12 @@ namespace Asteroids_Xbox.Entities
             this.asteroidTextureName = asteroidTextureName;
         }
 
-        public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
+        public override void Load(ContentManager content)
         {
-            // TODO: Make asteroid animation
-            Animation = new Animation();
             asteroidTexture = content.Load<Texture2D>(asteroidTextureName);
-            Animation.Initialize(asteroidTexture, Vector2.Zero, 
-                asteroidTexture.Width, asteroidTexture.Height, 1, 30, Color.White, 1f, false);
+            Animation.Initialize(asteroidTexture, Vector2.Zero,
+                asteroidTexture.Width, asteroidTexture.Height, 1, 30, Color.White, 1f, true);
 
-            Active = true;
             Health = 50;
             Damage = 100;
             ScoreWorth = 100;
@@ -78,58 +80,16 @@ namespace Asteroids_Xbox.Entities
             MoveSpeed = 5.0f;
             MaxSpeed = MoveSpeed;
             RotationSpeed = 15.0f;
+            WrapScreen = true;
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
-            // Implement asteroid random floating shit bzzzzzzz
-            // BZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+            // TODO: Implement asteroid random floating shit bzzzzzzz
+            Rotate(RotationSpeed);
+            CurrentSpeed = new Vector2(10.0f, 0.0f);
 
-            // If the Asteroid is past the screen or its health reaches 0 then deactivate it
-            if (Position.X < -Width || Health <= 0)
-            {
-                // By setting the Active flag to false, the game will remove this objet from the 
-                // active game list
-                Active = false;
-            }
-
-            if (Active == false)
-            {
-                // If not active and health <= 0
-                if (Health <= 0)
-                {
-                    // Add an explosion - TODO
-                    // This should somehow be a breaking apart like the real game...
-                    // not sure how to do this yet.
-                    //AddExplosion(asteroids[i].Position);
-
-                    // Play the explosion sound - TODO
-                    //explosionSound.Play();
-
-                    //Add to the player's score
-                    player.Score += ScoreWorth;
-                }
-
-                asteroidManager.Remove(this);
-            }
-            else
-            {
-                Rotation += RotationSpeed;
-                Animation.Rotation = Rotation;
-                Forward();
-            }
-
-            // Update the position of the Animation
-            Animation.Position = Position;
-
-            // Update Animation
-            Animation.Update(gameTime);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            // Draw the animation
-            Animation.Draw(spriteBatch);
+            base.Update(inputManager, gameTime);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Asteroids_Xbox.Entities
     /// <summary>
     /// TODO: Implement
     /// </summary>
-    class Bullet : Entity
+    class Bullet : AnimatedEntity
     {
         private Vector2 speed;
         private Player player;
@@ -23,22 +23,18 @@ namespace Asteroids_Xbox.Entities
             this.Rotation = rotation;
         }
 
-        public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
+        public override void Load(ContentManager content)
         {
-            throw new NotImplementedException();
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
+            base.Update(inputManager, gameTime);
             // Move bullet
             Forward(speed.X, speed.Y);
 
             // TODO: Check collisions
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(null, Position, BackgroundColor);
-        }
     }
 }

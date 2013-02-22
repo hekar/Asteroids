@@ -23,11 +23,6 @@ namespace Asteroids_Xbox.Types
     abstract class Entity : Initializable, Updatable, Drawable
     {
         /// <summary>
-        /// Is the unit active?
-        /// </summary>
-        public bool Active { get; set; }
-
-        /// <summary>
         /// Rotation in degrees
         /// </summary>
         public float Rotation { get; set; }
@@ -64,7 +59,6 @@ namespace Asteroids_Xbox.Types
 
         public Entity()
         {
-            Active = true;
             Rotation = 0;
             Position = Vector2.Zero;
 
@@ -81,7 +75,7 @@ namespace Asteroids_Xbox.Types
 
         public void Forward()
         {
-            Forward(MaxSpeed, MaxSpeed);
+            Forward(MoveSpeed, MoveSpeed);
         }
 
         public void Backward()
