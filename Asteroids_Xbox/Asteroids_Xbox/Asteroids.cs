@@ -28,9 +28,12 @@ namespace Asteroids_Xbox
         private readonly InputManager inputManager;
         private readonly EntityManager entityManager;
 
+        // Screens
+        private Titlescreen titleScreen;
+
         // Entities
+
         private Player player;
-        private ScoreDisplay scoreDisplay;
 
         public Asteroids()
         {
@@ -48,14 +51,14 @@ namespace Asteroids_Xbox
         /// </summary>
         protected override void Initialize()
         {
-            entityManager.Add(new Background());
+            titleScreen = new Titlescreen();
+            titleScreen.Visible = true;
 
-            // TODO: Move this code elsewhere
             player = new Player();
-            entityManager.Add(player);
 
-            scoreDisplay = new ScoreDisplay(new List<Player>(new Player[] {player}));
-            entityManager.Add(scoreDisplay);
+            entityManager.Add(new Background());
+            entityManager.Add(player);
+            entityManager.Add(new ScoreDisplay(new List<Player>(new Player[] {player})));
 
             base.Initialize();
         }
@@ -68,6 +71,7 @@ namespace Asteroids_Xbox
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            titleScreen.Initialize(Content, GraphicsDevice);
             entityManager.Initialize(Content, GraphicsDevice);
         }
 
@@ -76,7 +80,6 @@ namespace Asteroids_Xbox
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -86,21 +89,37 @@ namespace Asteroids_Xbox
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Hack: Exit game on Xbox 360
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-            {
-                this.Exit();
-            }
-
             inputManager.PreviousKeyboardState = inputManager.CurrentKeyboardState;
             inputManager.CurrentKeyboardState = Keyboard.GetState();
 
             inputManager.PreviousGamePadState = inputManager.CurrentGamePadState;
             inputManager.CurrentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-            asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
-            entityManager.Update(inputManager, gameTime);
 
+            var exitPressed = inputManager.WasKeyPressed(Keys.Escape) ||
+                    inputManager.WasButtonPressed(Buttons.Back);
+            if (titleScreen.Visible)
+            {
+                // Hack: Exit game
+                if (exitPressed)
+                {
+                    this.Exit();
+                }
+
+                titleScreen.Update(inputManager, gameTime);
+            }
+            else
+            {
+                // Hack: Show titlescreen/Pause game
+                if (exitPressed)
+                {
+                    titleScreen.Visible = true;
+                }
+
+                asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
+                entityManager.Update(inputManager, gameTime);
+            }
+            
             base.Update(gameTime);
         }
         
@@ -113,7 +132,14 @@ namespace Asteroids_Xbox
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
-            entityManager.Draw(spriteBatch);
+            if (titleScreen.Visible)
+            {
+                titleScreen.Draw(spriteBatch);
+            }
+            else
+            {
+                entityManager.Draw(spriteBatch);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
