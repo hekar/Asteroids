@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Manager
 {
+    /// <summary>
+    /// TODO: Implement levels and difficulty increases, etc
+    /// </summary>
     class AsteroidManager
     {
         private readonly EntityManager entityManager;
