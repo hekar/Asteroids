@@ -79,7 +79,7 @@ namespace Asteroids_Xbox.Entities
 
         private void WriteSubMessage(SpriteBatch spriteBatch)
         {
-            var text = "Press Enter or A to Start Game";
+            var text = "Press Enter (A) to Start";
 
             var offset = font.MeasureString(text);
             var pos = new Vector2
