@@ -95,25 +95,24 @@ namespace Asteroids_Xbox
             inputManager.PreviousGamePadState = inputManager.CurrentGamePadState;
             inputManager.CurrentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-
-            var exitPressed = inputManager.WasKeyPressed(Keys.Escape) ||
-                    inputManager.WasButtonPressed(Buttons.Back);
             if (titleScreen.Visible)
             {
-                // Hack: Exit game
-                if (exitPressed)
+                titleScreen.Update(inputManager, gameTime);
+
+                if (titleScreen.ExitRequested)
                 {
                     this.Exit();
                 }
-
-                titleScreen.Update(inputManager, gameTime);
             }
             else
             {
+                var exitPressed = inputManager.WasKeyPressed(Keys.Escape) ||
+                    inputManager.WasButtonPressed(Buttons.Back);
                 // Hack: Show titlescreen/Pause game
                 if (exitPressed)
                 {
-                    titleScreen.Visible = true;
+                    //pause screen
+                    //titleScreen.Visible = true;
                 }
 
                 asteroidManager.Update(Content, GraphicsDevice, player, gameTime);

@@ -75,7 +75,7 @@ namespace Asteroids_Xbox.Entities
             else
             {
                 // Deccelerate...
-                CurrentSpeed = new Vector2(CurrentSpeed.X / 1.15f, CurrentSpeed.Y / 1.15f);
+                CurrentSpeed = new Vector2(CurrentSpeed.X / 1.05f, CurrentSpeed.Y / 1.05f);
             }
 
             base.Update(inputManager, gameTime);

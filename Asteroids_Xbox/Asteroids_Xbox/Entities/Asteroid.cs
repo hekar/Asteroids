@@ -83,6 +83,8 @@ namespace Asteroids_Xbox.Entities
             WrapScreen = true;
         }
 
+
+
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             // TODO: Implement asteroid random floating shit bzzzzzzz
