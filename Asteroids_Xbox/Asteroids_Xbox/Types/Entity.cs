@@ -88,6 +88,11 @@ namespace Asteroids_Xbox.Types
             Forward(-MoveSpeed, -MoveSpeed);
         }
 
+        protected void EntityDeath()
+        {
+
+        }
+
         protected void Forward(float speedModX, float speedModY)
         {
             double rad = MathHelper.ToRadians(Rotation);

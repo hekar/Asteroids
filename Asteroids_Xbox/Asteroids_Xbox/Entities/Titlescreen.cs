@@ -16,9 +16,13 @@ namespace Asteroids_Xbox.Entities
     {
         public bool Visible { get; set; }
         private SpriteFont font;
-
+        enum GameStatus { start, gameOver, help, pause };
+        private GameStatus gameStatus;
+        public bool ExitRequested { get; private set; }
         public override void Load(ContentManager content)
         {
+            ExitRequested = false;
+            gameStatus = GameStatus.start;
             font = content.Load<SpriteFont>("gameFont");
 
             var texture = content.Load<Texture2D>("mainMenu");
@@ -42,7 +46,7 @@ namespace Asteroids_Xbox.Entities
             if (keyboard.IsKeyDown(Keys.F1) ||
                 gamepad.Buttons.Y == ButtonState.Pressed)
             {
-                // TODO: Show Help
+                gameStatus = GameStatus.help;
             }
             else if (keyboard.IsKeyDown(Keys.Space) ||
                 keyboard.IsKeyDown(Keys.Enter) ||
@@ -52,6 +56,24 @@ namespace Asteroids_Xbox.Entities
                 Visible = false;
             }
 
+            var escPressed = inputManager.WasKeyPressed(Keys.Escape) ||
+                    inputManager.WasButtonPressed(Buttons.Back);
+            if (escPressed)
+            {
+                switch (gameStatus)
+                {
+                    case GameStatus.start:
+                        ExitRequested = true;
+                        break;
+                    case GameStatus.gameOver:
+                        break;
+                    case GameStatus.help:
+                        gameStatus = GameStatus.start;
+                        break;
+                    default:
+                        break;
+                }
+            }
             base.Update(inputManager, gameTime);
         }
 
@@ -59,8 +81,34 @@ namespace Asteroids_Xbox.Entities
         {
             base.Draw(spriteBatch);
 
-            WriteTitleMessage(spriteBatch);
-            WriteSubMessage(spriteBatch);
+            switch (gameStatus)
+            {
+                case GameStatus.start:
+                    WriteTitleMessage(spriteBatch);
+                    WriteSubMessage(spriteBatch);
+                    break;
+                case GameStatus.gameOver:
+                    break;
+                case GameStatus.help:
+                    WriteHelpMessage(spriteBatch);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void WriteHelpMessage(SpriteBatch spriteBatch)
+        {
+            var text = "Help";
+
+            var offset = font.MeasureString(text);
+            var pos = new Vector2
+            (
+                GraphicsDevice.Viewport.X + (GraphicsDevice.Viewport.Width / 2) - (offset.X / 2),
+                GraphicsDevice.Viewport.Y + (GraphicsDevice.Viewport.Height / 4) - (offset.Y / 2)
+            );
+
+            spriteBatch.DrawString(font, text, pos, Color.Green);
         }
 
         private void WriteTitleMessage(SpriteBatch spriteBatch)
