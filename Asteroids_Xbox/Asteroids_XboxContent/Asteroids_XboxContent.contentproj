@@ -128,9 +128,10 @@
   <ItemGroup>
     <Compile Include="asteroidSmall_Animated_Trans1.png">
       <Name>asteroidSmall_Animated_Trans1</Name>
-            <Importer>TextureImporter</Importer>
+      <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-      </ItemGroup>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="bullet.png">
       <Name>bullet</Name>

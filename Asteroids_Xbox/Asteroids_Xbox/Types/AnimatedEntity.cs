@@ -13,7 +13,7 @@ namespace Asteroids_Xbox.Types
     {
         public Animation Animation { get; set; }
 
-        protected GraphicsDevice GraphicsDevice;
+        protected GraphicsDevice GraphicsDevice { get; private set; }
 
         /// <summary>
         /// Wrap movement around the screen (ie. instead of item moving off screen, it wraps back to the other end)
@@ -133,11 +133,11 @@ namespace Asteroids_Xbox.Types
 
         static bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)
         {
-            var at =  e1.Animation.Transformations;
+            var at = e1.Animation.Transformations;
             var afw = e1.Animation.FrameWidth;
             var afh = e1.Animation.FrameHeight;
             var acd = e1.Animation.ColorData;
-            var bt =  e2.Animation.Transformations;
+            var bt = e2.Animation.Transformations;
             var bfw = e2.Animation.FrameWidth;
             var bfh = e2.Animation.FrameHeight;
             var bcd = e2.Animation.ColorData;

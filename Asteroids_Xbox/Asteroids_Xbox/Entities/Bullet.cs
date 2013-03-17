@@ -12,11 +12,14 @@ namespace Asteroids_Xbox.Entities
         private const string TextureName = "bullet";
 
         private Vector2 speed;
-        private Player player;
-        private Color BackgroundColor = Color.GhostWhite;
+        private readonly Player player;
+        private readonly Color BackgroundColor = Color.GhostWhite;
+        private readonly EntityManager entityManager;
 
-        public Bullet(Player player, Vector2 position, Vector2 speed, float rotation)
+        public Bullet(EntityManager entityManager, Player player, 
+            Vector2 position, Vector2 speed, float rotation)
         {
+            this.entityManager = entityManager;
             this.player = player;
             this.speed = speed;
             this.Rotation = rotation;
@@ -39,6 +42,9 @@ namespace Asteroids_Xbox.Entities
             Forward(speed.X, speed.Y);
 
             base.Update(inputManager, gameTime);
+
+            // TODO: Remove bullet when it flies off the screen
+            //GraphicsDevice.Viewport.y
         }
 
     }
