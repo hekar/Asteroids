@@ -11,7 +11,17 @@ namespace Asteroids_Xbox.Types
         /// <summary>
         /// The image representing the collection of images used for animation
         /// </summary>
-        private Texture2D spriteStrip;
+        public Texture2D SpriteStrip { get; set; }
+
+        /// <summary>
+        /// Transformations for the sprite
+        /// </summary>
+        public Matrix Transformations { get; set; }
+
+        /// <summary>
+        /// Color data
+        /// </summary>
+        public Color[] ColorData { get; set; }
 
         /// <summary>
         /// The scale used to display the sprite strip
@@ -100,7 +110,7 @@ namespace Asteroids_Xbox.Types
 
             Looping = looping;
             Position = position;
-            spriteStrip = texture;
+            SpriteStrip = texture;
 
             elapsedTime = 0;
             currentFrame = 0;
@@ -108,6 +118,9 @@ namespace Asteroids_Xbox.Types
 
             ShouldDraw = true;
             initialized = true;
+
+            ColorData = new Color[texture.Width * texture.Height]; 
+            texture.GetData(ColorData);
         }
 
         public void Update(GameTime gameTime)
@@ -170,7 +183,11 @@ namespace Asteroids_Xbox.Types
                 var radians = MathHelper.ToRadians(Rotation);
                 var center = new Vector2(((float)FrameWidth) / 2, ((float)FrameHeight) / 2);
 
-                spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color,
+                Transformations = Matrix.CreateScale(scale) *
+                       Matrix.CreateRotationZ(Rotation) *
+                       Matrix.CreateTranslation(new Vector3(Position, 0.0f));
+
+                spriteBatch.Draw(SpriteStrip, destinationRect, sourceRect, color,
                     radians, center, SpriteEffects.None, LayerDepth);
             }
         }
@@ -178,8 +195,16 @@ namespace Asteroids_Xbox.Types
 
     public class AnimationNotInitializedException : Exception
     {
-        public AnimationNotInitializedException() { }
-        public AnimationNotInitializedException(string message) : base(message) { }
-        public AnimationNotInitializedException(string message, Exception inner) : base(message, inner) { }
+        public AnimationNotInitializedException()
+        {
+        }
+
+        public AnimationNotInitializedException(string message) : base(message)
+        {
+        }
+
+        public AnimationNotInitializedException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

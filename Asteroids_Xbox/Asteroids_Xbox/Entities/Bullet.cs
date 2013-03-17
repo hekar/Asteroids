@@ -32,8 +32,6 @@ namespace Asteroids_Xbox.Entities
             base.Update(inputManager, gameTime);
             // Move bullet
             Forward(speed.X, speed.Y);
-
-            // TODO: Check collisions
         }
 
     }

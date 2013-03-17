@@ -2,6 +2,7 @@ using Asteroids_Xbox.Manager;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Asteroids_Xbox.Types
 {
@@ -10,7 +11,7 @@ namespace Asteroids_Xbox.Types
     /// </summary>
     abstract class AnimatedEntity : Entity
     {
-        public Animation Animation;
+        public Animation Animation { get; set; }
 
         protected GraphicsDevice GraphicsDevice;
 
@@ -24,6 +25,14 @@ namespace Asteroids_Xbox.Types
             get
             {
                 return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+            }
+        }
+
+        public float Radius
+        {
+            get
+            {
+                return (Bounds.Width > Bounds.Height) ? Bounds.Width : Bounds.Height;
             }
         }
 
@@ -101,5 +110,65 @@ namespace Asteroids_Xbox.Types
             Animation.Rotation = Rotation;
         }
 
+        public bool CheckCollision(AnimatedEntity other)
+        {
+            if (Vector2.Distance(this.Position, other.Position) < this.Radius)
+            {
+                // Perform pixel check now
+                var area = (this.Bounds.Width * this.Bounds.Height);
+                var otherArea = (other.Bounds.Width * other.Bounds.Height);
+
+                var smaller = (area > otherArea) ? other : this;
+                var larger = (area > otherArea) ? this : other;
+
+                return PerPixelCollision(smaller, larger);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)
+        {
+            var at =  e1.Animation.Transformations;
+            var afw = e1.Animation.FrameWidth;
+            var afh = e1.Animation.FrameHeight;
+            var acd = e1.Animation.ColorData;
+            var bt =  e2.Animation.Transformations;
+            var bfw = e2.Animation.FrameWidth;
+            var bfh = e2.Animation.FrameHeight;
+            var bcd = e2.Animation.ColorData;
+
+            // Get Color data of each Texture
+            Color[] bitsA = new Color[afw * afh];
+            Color[] bitsB = new Color[bfw * bfh];
+
+            // Calculate the intersecting rectangle
+            int x1 = Math.Max(e1.Bounds.X, e2.Bounds.X);
+            int x2 = Math.Min(e1.Bounds.X + e1.Bounds.Width, e2.Bounds.X + e2.Bounds.Width);
+
+            int y1 = Math.Max(e1.Bounds.Y, e2.Bounds.Y);
+            int y2 = Math.Min(e1.Bounds.Y + e1.Bounds.Height, e2.Bounds.Y + e2.Bounds.Height);
+
+            // For each single pixel in the intersecting rectangle
+            for (int y = y1; y < y2; ++y)
+            {
+                for (int x = x1; x < x2; ++x)
+                {
+                    // Get the color from each texture
+                    Color a = bitsA[(x - e1.Bounds.X) + (y - e1.Bounds.Y) * afw];
+                    Color b = bitsB[(x - e2.Bounds.X) + (y - e2.Bounds.Y) * bfw];
+
+                    // If both colors are not transparent (the alpha channel is not 0), then there is a collision
+                    if (a.A != 0 && b.A != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            // If no collision occurred by now, we're clear.
+            return false;
+        }
     }
 }
