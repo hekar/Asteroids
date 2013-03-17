@@ -15,13 +15,22 @@ namespace Asteroids_Xbox.Manager
     {
         private readonly List<Entity> entities = new List<Entity>();
         private readonly List<AnimatedEntity> animatedEntities = new List<AnimatedEntity>();
+        private readonly ContentManager contentManager;
+        private readonly GraphicsDevice graphicsDevice;
 
-        public EntityManager()
+        public EntityManager(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
+            this.contentManager = contentManager;
+            this.graphicsDevice = graphicsDevice;
         }
 
         public void Add(Entity entity)
         {
+            if (!entity.Initialized)
+            {
+                entity.Initialize(contentManager, graphicsDevice);
+            }
+
             entities.Add(entity);
 
             if (entity is AnimatedEntity)
@@ -50,7 +59,10 @@ namespace Asteroids_Xbox.Manager
 
         public void Update(InputManager inputManager, GameTime gameTime)
         {
-            foreach (var entity in entities)
+            // We need a copy, because the list may change while iterating
+            // over the entities
+            var copy = entities.ToList();
+            foreach (var entity in copy)
             {
                 entity.Update(inputManager, gameTime);
             }

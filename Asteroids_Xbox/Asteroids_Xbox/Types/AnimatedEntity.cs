@@ -62,6 +62,8 @@ namespace Asteroids_Xbox.Types
 
             Animation = new Animation();
             Load(content);
+
+            Initialized = true;
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)

@@ -23,6 +23,11 @@ namespace Asteroids_Xbox.Types
     abstract class Entity : Initializable, Updatable, Drawable
     {
         /// <summary>
+        /// Has the entity been initialized and had its content loaded?
+        /// </summary>
+        public bool Initialized { get; protected set; }
+
+        /// <summary>
         /// Rotation in degrees
         /// </summary>
         public float Rotation { get; set; }
