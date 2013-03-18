@@ -85,13 +85,11 @@ namespace Asteroids_Xbox.Entities
             MaxSpeed = MoveSpeed;
             RotationSpeed = 2.0f;
             WrapScreen = true;
-            CurrentSpeed = new Vector2(MoveSpeed, MoveSpeed);
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Rotate(RotationSpeed);
-
             base.Update(inputManager, gameTime);
         }
     }

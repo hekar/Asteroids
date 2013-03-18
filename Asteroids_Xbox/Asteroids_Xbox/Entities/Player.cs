@@ -24,6 +24,14 @@ namespace Asteroids_Xbox.Entities
         public int Lives { get; set; }
         public int Score { get; set; }
 
+        public bool Won
+        {
+            get
+            {
+                return Score > 10000;
+            }
+        }
+
         public bool Alive
         {
             get
@@ -39,6 +47,7 @@ namespace Asteroids_Xbox.Entities
                 return (gameTime.TotalGameTime.TotalSeconds - lastRespawnTime) <= protectionTime;
             }
         }
+
         private double previousSeconds;
         private double lastRespawnTime;
         private ContentManager content;
@@ -171,5 +180,6 @@ namespace Asteroids_Xbox.Entities
             explosion.Position = new Vector2(position.X, position.Y);
             return explosion;
         }
+
     }
 }
