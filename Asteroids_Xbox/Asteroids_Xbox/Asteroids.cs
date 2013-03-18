@@ -119,6 +119,10 @@ namespace Asteroids_Xbox
                 {
                     // TODO: Game over
                 }
+                else if (player.Won)
+                {
+                    // TODO: You win!!
+                }
 
                 asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
                 entityManager.Update(inputManager, gameTime);
