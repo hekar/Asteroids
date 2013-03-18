@@ -20,6 +20,8 @@ namespace Asteroids_Xbox.Manager
         /// </summary>
         private readonly List<Asteroid> asteroids = new List<Asteroid>();
 
+        private readonly List<Explosion> explosions = new List<Explosion>();
+
         /// <summary>
         /// Newly created large asteroids. Created by the game timer (not by breaking larger asteroids into smaller ones)
         /// </summary>
@@ -33,6 +35,8 @@ namespace Asteroids_Xbox.Manager
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
         private int asteroidSpawnLimit;
+
+        public enum Sizes { Small = 1, Medium, Large };
 
         public AsteroidManager(EntityManager entityManager)
         {
@@ -86,12 +90,15 @@ namespace Asteroids_Xbox.Manager
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
                 var asteroid = asteroids[i];
-                if (asteroid.Dead || asteroid.Offscreen)
+                if (asteroid.Dead)
                 {
-                    // TODO: Add an explosion
-                    // This should somehow be a breaking apart like the real game...
-                    // not sure how to do this yet.
-                    //AddExplosion(asteroids[i].Position);
+                    // Add an explosion
+                    //TODO Toggle what explosion size.
+                    var explosion = CreateExplosion(Sizes.Large, content, graphicsDevice);
+                    explosions.Add(explosion);
+                    entityManager.Add(explosion);
+                    explosion.explodeSound.Play();
+
 
                     // TODO: Play the explosion sound
                     //explosionSound.Play();
@@ -101,7 +108,41 @@ namespace Asteroids_Xbox.Manager
 
                     Remove(asteroid);
                 }
+                if (asteroid.Offscreen)
+                {
+                    //Wrap around.
+                }
             }
+        }
+
+        public Explosion CreateExplosion(Sizes size, ContentManager content, GraphicsDevice graphicsDevice/*, Asteroid asteroid*/)
+        {
+            Explosion explosion;
+            switch (size)
+            {
+                case Sizes.Small:
+                    explosion = new Explosion("asteroidSmall");
+                    break;
+                case Sizes.Medium:
+                    explosion = new Explosion("asteroidMedium");
+                    break;
+                case Sizes.Large:
+                    explosion = new Explosion("asteroidLarge");
+                    break;
+                default:
+                    explosion = new Explosion("asteroidLarge");
+                    break;
+            }
+
+
+            explosion.Initialize(content, graphicsDevice);
+
+            // TODO: Randomly generate the position of the asteroid
+            explosion.Position = new Vector2(graphicsDevice.Viewport.Width / 4, graphicsDevice.Viewport.Height / 4);
+
+            explosions.Add(explosion);
+
+            return explosion;
         }
     }
 }

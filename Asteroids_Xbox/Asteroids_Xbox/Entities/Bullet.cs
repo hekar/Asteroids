@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Asteroids_Xbox.Manager;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -15,6 +16,7 @@ namespace Asteroids_Xbox.Entities
         private readonly Player player;
         private readonly Color BackgroundColor = Color.GhostWhite;
         private readonly EntityManager entityManager;
+        public SoundEffect laserSound;
 
         public Bullet(EntityManager entityManager, Player player, 
             Vector2 position, Vector2 speed, float rotation)
@@ -24,6 +26,8 @@ namespace Asteroids_Xbox.Entities
             this.speed = speed;
             this.Rotation = rotation;
 
+            WrapScreen = true;
+
             Position = position;
             MaxSpeed = 5.0f;
             MoveSpeed = 5.0f;
@@ -32,6 +36,7 @@ namespace Asteroids_Xbox.Entities
 
         public override void Load(ContentManager content)
         {
+            laserSound = content.Load<SoundEffect>("sound/laserFire");
             Texture2D texture = content.Load<Texture2D>(TextureName);
             Animation.Initialize(texture, Vector2.Zero, 5, 5, 1, 30, BackgroundColor, 1f, true);
         }
@@ -40,9 +45,7 @@ namespace Asteroids_Xbox.Entities
         {
             // Move bullet
             Forward(speed.X, speed.Y);
-
             base.Update(inputManager, gameTime);
-
             // TODO: Remove bullet when it flies off the screen
             //GraphicsDevice.Viewport.y
         }
