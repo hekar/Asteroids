@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Asteroids_Xbox.Entities;
 
 namespace Asteroids_Xbox.Types
 {
@@ -14,6 +15,17 @@ namespace Asteroids_Xbox.Types
         public Animation Animation { get; set; }
 
         protected GraphicsDevice GraphicsDevice { get; private set; }
+
+        /// <summary>
+        /// Position of the unit
+        /// </summary>
+        public Vector2 CenterPosition
+        {
+            get
+            {
+                return new Vector2(Position.X - (Width / 2), Position.Y - (Height / 2));
+            }
+        }
 
         /// <summary>
         /// Wrap movement around the screen (ie. instead of item moving off screen, it wraps back to the other end)
@@ -32,7 +44,7 @@ namespace Asteroids_Xbox.Types
         {
             get
             {
-                return (Bounds.Width > Bounds.Height) ? Bounds.Width : Bounds.Height;
+                return (Bounds.Width > Bounds.Height) ? Bounds.Width / 2 : Bounds.Height / 2;
             }
         }
 
@@ -50,6 +62,18 @@ namespace Asteroids_Xbox.Types
         public int Height
         {
             get { return Animation.FrameHeight; }
+        }
+
+        /// <summary>
+        /// Is the entity offscreen?
+        /// </summary>
+        public bool Offscreen
+        {
+            get
+            {
+                var offscreen = !GraphicsDevice.Viewport.Bounds.Intersects(Bounds);
+                return offscreen;
+            }
         }
 
         public abstract void Load(ContentManager content);
@@ -114,7 +138,10 @@ namespace Asteroids_Xbox.Types
 
         public bool CheckCollision(AnimatedEntity other)
         {
-            if (Vector2.Distance(this.Position, other.Position) < this.Radius)
+            var distance = Math.Abs(Vector2.Distance(this.CenterPosition, other.CenterPosition));
+            var inThisRadius = distance < this.Radius;
+            var inOtherRadius = distance < other.Radius;
+            if (inThisRadius || inOtherRadius)
             {
                 // Perform pixel check now
                 var area = (this.Bounds.Width * this.Bounds.Height);
@@ -123,12 +150,21 @@ namespace Asteroids_Xbox.Types
                 var smaller = (area > otherArea) ? other : this;
                 var larger = (area > otherArea) ? this : other;
 
-                return PerPixelCollision(smaller, larger);
+                // TODO: later after i eat these muffins
+                // and have some ice cream and watch
+                // 50 HOURS OF KDRAMAS OMG, NEW SERIES FOUND GOMG AOSDMF ASDFJKSADJG ASDFOSDMAGOMSDAFKLASDHJFLKASDFKLHASDFAJLSDFHASJKDFHASJDKFHASDKLFHASKJDFHASJKDHKJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJF
+                //return PerPixelCollision(smaller, larger);\
+
+                return true;
             }
             else
             {
                 return false;
             }
+        }
+
+        public virtual void Touch(AnimatedEntity other)
+        {
         }
 
         static bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)

@@ -25,9 +25,10 @@ namespace Asteroids_Xbox.Entities
             this.Rotation = rotation;
 
             Position = position;
-            MaxSpeed = 5.0f;
-            MoveSpeed = 5.0f;
-            RotationSpeed = 5.0f;
+            MaxSpeed = 2.0f;
+            MoveSpeed = 2.0f;
+            RotationSpeed = 0.0f;
+            WrapScreen = true;
         }
 
         public override void Load(ContentManager content)
@@ -43,9 +44,22 @@ namespace Asteroids_Xbox.Entities
 
             base.Update(inputManager, gameTime);
 
-            // TODO: Remove bullet when it flies off the screen
-            //GraphicsDevice.Viewport.y
+            if (Offscreen)
+            {
+                entityManager.Remove(this);
+            }
         }
 
+        public override void Touch(AnimatedEntity other)
+        {
+            if (other is Asteroid)
+            {
+                var asteroid = other as Asteroid;
+                asteroid.Health = 0;
+                entityManager.Remove(this);
+            }
+
+            base.Touch(other);
+        }
     }
 }

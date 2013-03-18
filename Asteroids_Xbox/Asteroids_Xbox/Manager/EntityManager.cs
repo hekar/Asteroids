@@ -80,15 +80,17 @@ namespace Asteroids_Xbox.Manager
 
         private void CheckCollisions(List<AnimatedEntity> entities)
         {
-            foreach (var entity in entities)
+            var copy = entities.ToList();
+            foreach (var entity in copy)
             {
-                foreach (var other in entities)
+                foreach (var other in copy)
                 {// comment
-                    if (entity is Bullet)
+                    if (entity is Bullet && other is Asteroid)
                     {
                         var collision = entity.CheckCollision(other);
                         if (collision)
                         {
+                            entity.Touch(other);
                             // TODO: Handle collision
                             Debug.WriteLine("Collision: " + collision.ToString() + " - " + other.ToString());
                         }    

@@ -39,18 +39,6 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        /// <summary>
-        /// Is the asteroid offscreen?
-        /// </summary>
-        public bool Offscreen
-        {
-            get
-            {
-                var offscreen = false;// !GraphicsDevice.Viewport.Bounds.Intersects(Bounds);
-                return offscreen;
-            }
-        }
-
         private readonly AsteroidManager asteroidManager;
         private readonly Player player;
         private Texture2D asteroidTexture;
@@ -77,19 +65,17 @@ namespace Asteroids_Xbox.Entities
             Damage = 100;
             ScoreWorth = 100;
 
-            MoveSpeed = 5.0f;
+            MoveSpeed = 1.0f;
             MaxSpeed = MoveSpeed;
-            RotationSpeed = 15.0f;
-            WrapScreen = true;
+            RotationSpeed = 2.0f;
+            WrapScreen = false;
+            CurrentSpeed = new Vector2(MoveSpeed, MoveSpeed);
         }
-
-
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             // TODO: Implement asteroid random floating shit bzzzzzzz
             Rotate(RotationSpeed);
-            CurrentSpeed = new Vector2(10.0f, 0.0f);
 
             base.Update(inputManager, gameTime);
         }

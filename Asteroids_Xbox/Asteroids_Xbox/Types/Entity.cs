@@ -100,10 +100,27 @@ namespace Asteroids_Xbox.Types
             float speedX = (float)Math.Cos(rad) * speedModX;
             float speedY = (float)Math.Sin(rad) * speedModY;
 
-            var nextSpeedX = MathHelper.Clamp(CurrentSpeed.X + speedX, -MaxSpeed, MaxSpeed);
-            var nextSpeedY = MathHelper.Clamp(CurrentSpeed.Y + speedY, -MaxSpeed, MaxSpeed);
+            
+            var nextSpeedX = CurrentSpeed.X + speedX;
+            var nextSpeedY = CurrentSpeed.Y + speedY;
 
-            CurrentSpeed = new Vector2(nextSpeedX, nextSpeedY);
+            var nextSpeed = new Vector2(nextSpeedX, nextSpeedY);
+
+            if (nextSpeed.Length() > MaxSpeed)
+            {
+                var x = nextSpeed.X;
+                var y = nextSpeed.Y;
+                var max = Math.Max(x, y);
+
+                var mod = Vector2.Distance(Vector2.Zero, CurrentSpeed) / MaxSpeed;
+                nextSpeed = new Vector2
+                (
+                    nextSpeed.X / mod,
+                    nextSpeed.Y / mod
+                );
+            }
+
+            CurrentSpeed = nextSpeed;
         }
 
         public virtual void Rotate(float angle)

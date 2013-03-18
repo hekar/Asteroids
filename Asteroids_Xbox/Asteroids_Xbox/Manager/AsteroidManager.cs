@@ -32,7 +32,7 @@ namespace Asteroids_Xbox.Manager
         /// <summary>
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
-        private int asteroidSpawnLimit;
+        private int asteroidSpawnLimit = 15;
 
         public AsteroidManager(EntityManager entityManager)
         {
@@ -51,11 +51,11 @@ namespace Asteroids_Xbox.Manager
             asteroid.Initialize(content, graphicsDevice);
 
             // TODO: Randomly generate the position of the asteroid
-            asteroid.Position = new Vector2(graphicsDevice.Viewport.Width + asteroid.Width / 2,
-                random.Next(asteroid.Height / 2, graphicsDevice.Viewport.Height - asteroid.Height));
+            float x = graphicsDevice.Viewport.X + asteroid.Width / 2;
+            float y = random.Next(asteroid.Height / 2, graphicsDevice.Viewport.Y + asteroid.Height);
 
+            asteroid.Position = new Vector2(x, y);
             asteroids.Add(asteroid);
-
             return asteroid;
         }
 
@@ -86,6 +86,12 @@ namespace Asteroids_Xbox.Manager
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
                 var asteroid = asteroids[i];
+                if (asteroid.Dead)
+                {
+                    //Add to the player's score
+                    player.Score += asteroid.ScoreWorth;
+                }
+
                 if (asteroid.Dead || asteroid.Offscreen)
                 {
                     // TODO: Add an explosion
@@ -95,9 +101,6 @@ namespace Asteroids_Xbox.Manager
 
                     // TODO: Play the explosion sound
                     //explosionSound.Play();
-
-                    //Add to the player's score
-                    player.Score += asteroid.ScoreWorth;
 
                     Remove(asteroid);
                 }

@@ -39,8 +39,8 @@ namespace Asteroids_Xbox.Entities
             Health = 100;
             Score = 0;
             Lives = 3;
-            MoveSpeed = 8.0f;
-            MaxSpeed = 10.0f;
+            MoveSpeed = 1.5f;
+            MaxSpeed = 2.5f;
             RotationSpeed = 5.0f;
             CurrentSpeed = Vector2.Zero;
             WrapScreen = true;
@@ -73,11 +73,6 @@ namespace Asteroids_Xbox.Entities
                 gamepad.DPad.Up == ButtonState.Pressed)
             {
                 Forward();
-            }
-            else if (keyboard.IsKeyDown(Keys.Down) ||
-                gamepad.DPad.Down == ButtonState.Pressed)
-            {
-                Backward();
             }
             else
             {
