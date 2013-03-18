@@ -52,7 +52,6 @@ namespace Asteroids_Xbox
             asteroidManager = new AsteroidManager(entityManager);
 
             titleScreen = new Titlescreen();
-            titleScreen.Visible = true;
 
             player = new Player(entityManager);
 
@@ -73,6 +72,8 @@ namespace Asteroids_Xbox
 
             titleScreen.Initialize(Content, GraphicsDevice);
             entityManager.Initialize(Content, GraphicsDevice);
+
+            titleScreen.Visible = true;
         }
 
         /// <summary>
@@ -98,7 +99,6 @@ namespace Asteroids_Xbox
             if (titleScreen.Visible)
             {
                 titleScreen.Update(inputManager, gameTime);
-
                 if (titleScreen.ExitRequested)
                 {
                     this.Exit();

@@ -76,6 +76,7 @@ namespace Asteroids_Xbox.Entities
             {
                 var explosion = CreateExplosion(Position, content, GraphicsDevice);
                 entityManager.Add(explosion);
+                explosion.PlayExplosionSound();
             }
 
             Position = new Vector2

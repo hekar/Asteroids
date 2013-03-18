@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -14,16 +15,39 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class Titlescreen : AnimatedEntity
     {
-        public bool Visible { get; set; }
+        private bool visible;
+
+        public bool Visible
+        {
+            get { return visible; }
+            set
+            {
+                visible = value;
+                if (visible)
+                {
+                    PlayMusic(menuSong);
+                }
+                else
+                {
+                    PlayMusic(gameSong);
+                }
+            }
+        }
+
         private SpriteFont font;
         enum GameStatus { start, gameOver, help, pause };
         private GameStatus gameStatus;
         public bool ExitRequested { get; private set; }
+        private Song menuSong;
+        private Song gameSong;
         public override void Load(ContentManager content)
         {
             ExitRequested = false;
             gameStatus = GameStatus.start;
             font = content.Load<SpriteFont>("gameFont");
+
+            menuSong = content.Load<Song>("sound/menuMusic");
+            gameSong = content.Load<Song>("sound/gameMusic");
 
             var texture = content.Load<Texture2D>("mainMenu");
             Animation.Initialize(texture, Vector2.Zero, texture.Width, texture.Height, 1, 30, Color.White, 1f, true);
@@ -35,6 +59,22 @@ namespace Asteroids_Xbox.Entities
             WrapScreen = true;
 
             Position = new Vector2(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y);
+        }
+
+        private void PlayMusic(Song song)
+        {
+            // Due to the way the MediaPlayer plays music,
+            // we have to catch the exception. Music will play when the game is not tethered
+            try
+            {
+                MediaPlayer.Stop();
+                // Play the music
+                MediaPlayer.Play(song);
+
+                // Loop the currently playing song
+                MediaPlayer.IsRepeating = true;
+            }
+            catch { }
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
