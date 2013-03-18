@@ -100,6 +100,5 @@ namespace Asteroids_Xbox.Types
             base.Rotate(angle);
             Animation.Rotation = Rotation;
         }
-
     }
 }
