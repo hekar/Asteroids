@@ -71,6 +71,7 @@
     <Compile Include="Entities\Background.cs" />
     <Compile Include="Entities\Bullet.cs" />
     <Compile Include="Entities\EnemyShip.cs" />
+    <Compile Include="Entities\Explosion.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Entities\ScoreDisplay.cs" />
     <Compile Include="Entities\Titlescreen.cs" />
