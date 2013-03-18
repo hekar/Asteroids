@@ -95,17 +95,29 @@ namespace Asteroids_Xbox.Manager
 
                 if (asteroid.Dead)
                 {
-                    // Add an explosion
-                    //TODO Toggle what explosion size.
-                    var explosion = CreateExplosion(Sizes.Large, asteroid.Position, content, graphicsDevice);
+                    var nextSize = (asteroid.Size == Sizes.Large) ? Sizes.Medium : Sizes.Small;
+                    var explosion = CreateExplosion(nextSize, asteroid.Position, content, graphicsDevice);
                     entityManager.Add(explosion);
-                    explosion.explodeSound.Play();
+                    explosion.PlayExplosionSound();
 
+                    var splitAsteroids = new List<Asteroid>();
+                    if (asteroid.Size != Sizes.Small)
+                    {
 
-                    // TODO: Play the explosion sound
-                    //explosionSound.Play();
-
+                        var a1 = new Asteroid(this, player, nextSize);
+                        var a2 = new Asteroid(this, player, nextSize);
+                        a1.Position = new Vector2(asteroid.Position.X, asteroid.Position.Y + 15);
+                        a2.Position = asteroid.Position;
+                        splitAsteroids.AddRange(new Asteroid[] { a1, a2 });
+                    }
+   
                     Remove(asteroid);
+
+                    foreach (var newAsteroid in splitAsteroids)
+                    {
+                        entityManager.Add(newAsteroid);
+                        asteroids.Add(newAsteroid);
+                    }
                 }
             }
         }

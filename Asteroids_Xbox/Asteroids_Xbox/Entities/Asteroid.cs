@@ -27,7 +27,7 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public int ScoreWorth { get; set; }
 
-        public Sizes size;
+        public Sizes Size { get; set; }
 
         /// <summary>
         /// Is the asteroid dead?
@@ -44,7 +44,8 @@ namespace Asteroids_Xbox.Entities
         private readonly Player player;
         private Texture2D asteroidTexture;
 
-        public Asteroid(AsteroidManager asteroidManager, Player player) : this(asteroidManager, player, Sizes.Large)
+        public Asteroid(AsteroidManager asteroidManager, Player player)
+            : this(asteroidManager, player, Sizes.Large)
         {
         }
 
@@ -52,12 +53,12 @@ namespace Asteroids_Xbox.Entities
         {
             this.asteroidManager = asteroidManager;
             this.player = player;
-            this.size = newSize;
+            this.Size = newSize;
         }
 
         public override void Load(ContentManager content)
         {
-            switch (this.size)
+            switch (this.Size)
             {
                 case Sizes.Small:
                     asteroidTexture = content.Load<Texture2D>("asteroidSmall");

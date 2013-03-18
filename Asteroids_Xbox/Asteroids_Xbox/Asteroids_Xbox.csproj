@@ -93,6 +93,7 @@
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Entities\Background.cs" />
     <Compile Include="Entities\Bullet.cs" />
+    <Compile Include="Entities\EnemyBullet.cs" />
     <Compile Include="Entities\EnemyShip.cs" />
     <Compile Include="Entities\Explosion.cs" />
     <Compile Include="Entities\ScoreDisplay.cs" />
