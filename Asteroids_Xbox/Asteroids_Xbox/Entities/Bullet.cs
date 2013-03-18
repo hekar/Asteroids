@@ -1,10 +1,9 @@
-using System;
+using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Asteroids_Xbox.Manager;
-using Microsoft.Xna.Framework.Audio;
 
 namespace Asteroids_Xbox.Entities
 {

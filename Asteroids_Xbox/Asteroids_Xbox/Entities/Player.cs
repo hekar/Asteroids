@@ -48,7 +48,7 @@ namespace Asteroids_Xbox.Entities
         public override void Load(ContentManager content)
         {
             Texture2D playerTexture = content.Load<Texture2D>(PlayerTextureName);
-            Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 30, BackgroundColor, 1f, true);
+            Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 45, BackgroundColor, 1f, true);
 
             Score = 0;
             Lives = 3;

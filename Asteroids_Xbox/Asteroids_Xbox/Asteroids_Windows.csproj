@@ -86,6 +86,7 @@
     <Compile Include="Types\Drawable.cs" />
     <Compile Include="Types\Entity.cs" />
     <Compile Include="Types\Initializable.cs" />
+    <Compile Include="Types\Sizes.cs" />
     <Compile Include="Types\Updatable.cs" />
   </ItemGroup>
   <ItemGroup>
