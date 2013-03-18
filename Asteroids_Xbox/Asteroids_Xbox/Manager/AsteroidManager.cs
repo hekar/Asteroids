@@ -169,7 +169,7 @@ namespace Asteroids_Xbox.Manager
                 }
             };
 
-            var texture = fun(size);
+            var texture = fun(size) + "_Animated_Trans1";
             var explosion = new Explosion(entityManager, texture);
             explosion.Initialize(content, graphicsDevice);
             explosion.Position = new Vector2(position.X, position.Y);

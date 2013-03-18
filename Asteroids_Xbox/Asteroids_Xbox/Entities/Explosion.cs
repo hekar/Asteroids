@@ -23,7 +23,7 @@ namespace Asteroids_Xbox.Entities
         public override void Load(ContentManager content)
         {
             explodeSound = content.Load<SoundEffect>("sound/explosion");
-            explosionTexture = content.Load<Texture2D>(explosionTextureName + "_Animated_Trans1");
+            explosionTexture = content.Load<Texture2D>(explosionTextureName);
 
             Animation.Initialize(explosionTexture, Vector2.Zero,
                 explosionTexture.Width / 16, explosionTexture.Height, 16, 60, Color.White, 1f, false);
