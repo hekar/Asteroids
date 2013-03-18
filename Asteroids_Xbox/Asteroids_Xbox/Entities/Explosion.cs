@@ -41,5 +41,10 @@ namespace Asteroids_Xbox.Entities
 
             base.Update(inputManager, gameTime);
         }
+
+        public void PlayExplosionSound()
+        {
+            explodeSound.Play();
+        }
     }
 }

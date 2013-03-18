@@ -123,7 +123,7 @@ namespace Asteroids_Xbox.Entities
             if (timeSinceLast > bulletFireTime)
             {
                 Vector2 bulletPosition = new Vector2(Position.X + (Width / 2), Position.Y + (Height / 2));
-                var bullet = new Bullet(entityManager, this, bulletPosition, speed, Rotation);
+                var bullet = new Bullet(entityManager, bulletPosition, speed, Rotation);
                 entityManager.Add(bullet);
                 bullet.laserSound.Play();
                 previousSeconds = totalSeconds;
