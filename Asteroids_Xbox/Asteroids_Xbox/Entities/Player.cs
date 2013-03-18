@@ -102,7 +102,7 @@ namespace Asteroids_Xbox.Entities
             var timeSinceLast = totalSeconds - previousSeconds;
             if (timeSinceLast > bulletFireTime)
             {
-                var bullet = new Bullet(this, Position, speed, Rotation);
+                var bullet = new Bullet(entityManager, this, Position, speed, Rotation);
                 entityManager.Add(bullet);
                 previousSeconds = totalSeconds;
                 return bullet;
