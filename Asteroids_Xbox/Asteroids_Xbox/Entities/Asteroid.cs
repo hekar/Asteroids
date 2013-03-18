@@ -89,7 +89,6 @@ namespace Asteroids_Xbox.Entities
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
-            // TODO: Implement asteroid random floating shit bzzzzzzz
             Rotate(RotationSpeed);
 
             base.Update(inputManager, gameTime);

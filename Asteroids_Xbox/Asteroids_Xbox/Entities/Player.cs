@@ -11,7 +11,10 @@ namespace Asteroids_Xbox.Entities
     class Player : AnimatedEntity
     {
         private const string PlayerTextureName = "shipAnimation";
+        private const string PlayerExplosionTextureName = "Ship_Explode";
+
         private const double bulletFireTime = 0.5;
+        private const double protectionTime = 1.0f;
 
         private readonly Color BackgroundColor = Color.White;
 
@@ -38,7 +41,7 @@ namespace Asteroids_Xbox.Entities
         }
         private double previousSeconds;
         private double lastRespawnTime;
-        private const double protectionTime = 5.0f;
+        private ContentManager content;
 
         public Player(EntityManager entityManager)
         {
@@ -47,6 +50,7 @@ namespace Asteroids_Xbox.Entities
 
         public override void Load(ContentManager content)
         {
+            this.content = content;
             Texture2D playerTexture = content.Load<Texture2D>(PlayerTextureName);
             Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 45, BackgroundColor, 1f, true);
 
@@ -58,14 +62,20 @@ namespace Asteroids_Xbox.Entities
             CurrentSpeed = Vector2.Zero;
             WrapScreen = true;
 
-            Respawn();
+            Respawn(false);
         }
 
-        private void Respawn()
+        private void Respawn(bool died)
         {
             if (gameTime != null)
             {
                 lastRespawnTime = gameTime.TotalGameTime.TotalSeconds; 
+            }
+            
+            if (died)
+            {
+                var explosion = CreateExplosion(Position, content, GraphicsDevice);
+                entityManager.Add(explosion);
             }
 
             Position = new Vector2
@@ -146,11 +156,19 @@ namespace Asteroids_Xbox.Entities
                 }
                 else
                 {
-                    Respawn();
+                    Respawn(true);
                 }
             }
 
             base.Touch(other);
+        }
+
+        public Explosion CreateExplosion(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
+        {
+            var explosion = new Explosion(entityManager, PlayerExplosionTextureName);
+            explosion.Initialize(content, graphicsDevice);
+            explosion.Position = new Vector2(position.X, position.Y);
+            return explosion;
         }
     }
 }

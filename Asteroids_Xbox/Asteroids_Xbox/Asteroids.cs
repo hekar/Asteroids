@@ -112,7 +112,12 @@ namespace Asteroids_Xbox
                 if (exitPressed)
                 {
                     //pause screen
-                    //titleScreen.Visible = true;
+                    titleScreen.Visible = true;
+                }
+
+                if (!player.Alive)
+                {
+                    // TODO: Game over
                 }
 
                 asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
