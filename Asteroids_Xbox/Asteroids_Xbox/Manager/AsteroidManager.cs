@@ -16,6 +16,8 @@ namespace Asteroids_Xbox.Manager
         private readonly EntityManager entityManager;
         private readonly Random random = new Random();
 
+        private const int DefaultAsteroidCount = 3;
+
         /// <summary>
         /// List of all asteroids
         /// </summary>
@@ -27,13 +29,13 @@ namespace Asteroids_Xbox.Manager
         private readonly List<Asteroid> freshAsteroids = new List<Asteroid>();
 
         // The rate at which the asteroids appear
-        private TimeSpan asteroidSpawnTime;
+        private readonly TimeSpan asteroidSpawnTime = TimeSpan.FromSeconds(1.5f);
         private TimeSpan previousSpawnTime;
 
         /// <summary>
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
-        private int asteroidSpawnLimit = 15;
+        private int asteroidSpawnLimit = DefaultAsteroidCount;
 
         public AsteroidManager(EntityManager entityManager)
         {
@@ -41,19 +43,44 @@ namespace Asteroids_Xbox.Manager
 
             // Set the time keepers to zero
             previousSpawnTime = TimeSpan.Zero;
-            // Used to determine how fast asteroids spawns
-            asteroidSpawnTime = TimeSpan.FromSeconds(1.5f);
         }
 
         public Asteroid CreateAsteroid(ContentManager content, GraphicsDevice graphicsDevice, Player player)
         {
             // Create an asteroid
-            Asteroid asteroid = new Asteroid(this, player);
+            var asteroid = new Asteroid(this, player);
             asteroid.Initialize(content, graphicsDevice);
 
-            // TODO: Randomly generate the position of the asteroid
-            float x = graphicsDevice.Viewport.X + asteroid.Width / 2;
-            float y = random.Next(asteroid.Height / 2, graphicsDevice.Viewport.Y + asteroid.Height);
+            float speed = 1.0f;
+            float x = 0.0f;
+            float y = 0.0f;
+            Vector2 direction = Vector2.Zero;
+            var corner = random.Next(0, 3);
+            switch (corner)
+            {
+                case 0:
+                    x = graphicsDevice.Viewport.X + asteroid.Width / 2;
+                    y = graphicsDevice.Viewport.Y + asteroid.Height / 2;
+                    asteroid.CurrentSpeed = new Vector2(1.0f * speed, 1.0f * speed);
+                    break;
+                case 1:
+                    x = graphicsDevice.Viewport.Width - asteroid.Width / 2;
+                    y = graphicsDevice.Viewport.Y + asteroid.Height / 2;
+                    asteroid.CurrentSpeed = new Vector2(-1.0f * speed, 1.0f * speed);
+                    break;
+                case 2:
+                    x = graphicsDevice.Viewport.X + asteroid.Width / 2;
+                    y = graphicsDevice.Viewport.Height - asteroid.Height / 2;
+                    asteroid.CurrentSpeed = new Vector2(1.0f * speed, -1.0f * speed);
+                    break;
+                case 3:
+                    x = graphicsDevice.Viewport.Width - asteroid.Width / 2;
+                    y = graphicsDevice.Viewport.Height - asteroid.Height / 2;
+                    asteroid.CurrentSpeed = new Vector2(-1.0f * speed, -1.0f * speed);
+                    break;
+                default:
+                    break;
+            }
 
             asteroid.Position = new Vector2(x, y);
             asteroids.Add(asteroid);
@@ -115,11 +142,14 @@ namespace Asteroids_Xbox.Manager
 
                     foreach (var newAsteroid in splitAsteroids)
                     {
+                        newAsteroid.CurrentSpeed = asteroid.CurrentSpeed;
                         entityManager.Add(newAsteroid);
                         asteroids.Add(newAsteroid);
                     }
                 }
             }
+
+            asteroidSpawnLimit = (int)Math.Floor((double)player.Score / 1000) + DefaultAsteroidCount;
         }
 
         public Explosion CreateExplosion(Sizes size, Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)

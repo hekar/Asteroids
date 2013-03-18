@@ -15,7 +15,6 @@ namespace Asteroids_Xbox.Entities
 
         private const double bulletFireTime = 0.5;
         private double previousSeconds;
-        private double lastRespawnTime;
         private Vector2 speed;
 
         public EnemyShip(EntityManager entityManager, Vector2 position, Vector2 speed)

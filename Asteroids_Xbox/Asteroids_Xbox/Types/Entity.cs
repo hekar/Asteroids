@@ -45,7 +45,7 @@ namespace Asteroids_Xbox.Types
         /// <summary>
         /// Current speed of the unit
         /// </summary>
-        protected Vector2 CurrentSpeed { get; set; }
+        public Vector2 CurrentSpeed { get; set; }
 
         /// <summary>
         /// Maximum speed of the unit
