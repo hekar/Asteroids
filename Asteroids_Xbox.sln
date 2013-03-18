@@ -54,11 +54,13 @@ Global
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|x86.ActiveCfg = Debug|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|x86.Build.0 = Debug|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|x86.ActiveCfg = Release|Xbox 360
+		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|x86.Build.0 = Release|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{613998DF-DC19-43DA-841B-ADDDB69723AA}.Release|Xbox 360.Build.0 = Release|Xbox 360
 	EndGlobalSection

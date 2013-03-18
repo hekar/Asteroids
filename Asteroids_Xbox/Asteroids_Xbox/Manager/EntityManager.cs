@@ -84,15 +84,14 @@ namespace Asteroids_Xbox.Manager
             foreach (var entity in copy)
             {
                 foreach (var other in copy)
-                {// comment
-                    if (entity is Bullet && other is Asteroid)
+                {
+                    if (entity is Bullet && other is Asteroid ||
+                        entity is Player && other is Asteroid)
                     {
                         var collision = entity.CheckCollision(other);
                         if (collision)
                         {
                             entity.Touch(other);
-                            // TODO: Handle collision
-                            Debug.WriteLine("Collision: " + collision.ToString() + " - " + other.ToString());
                         }    
                     }
                 }

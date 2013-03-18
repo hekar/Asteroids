@@ -71,8 +71,9 @@ namespace Asteroids_Xbox.Types
         {
             get
             {
-                var offscreen = !GraphicsDevice.Viewport.Bounds.Intersects(Bounds);
-                return offscreen;
+                var intersects = GraphicsDevice.Viewport.Bounds.Intersects(Bounds);
+                var contains = GraphicsDevice.Viewport.Bounds.Contains(Bounds);
+                return !intersects && !contains;
             }
         }
 

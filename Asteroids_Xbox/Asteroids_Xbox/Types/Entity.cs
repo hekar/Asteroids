@@ -94,7 +94,6 @@ namespace Asteroids_Xbox.Types
 
             float speedX = (float)Math.Cos(rad) * speedModX;
             float speedY = (float)Math.Sin(rad) * speedModY;
-
             
             var nextSpeedX = CurrentSpeed.X + speedX;
             var nextSpeedY = CurrentSpeed.Y + speedY;
@@ -108,11 +107,14 @@ namespace Asteroids_Xbox.Types
                 var max = Math.Max(x, y);
 
                 var mod = Vector2.Distance(Vector2.Zero, CurrentSpeed) / MaxSpeed;
-                nextSpeed = new Vector2
-                (
-                    nextSpeed.X / mod,
-                    nextSpeed.Y / mod
-                );
+                if (Math.Abs(mod) > 0.0)
+                {
+                    nextSpeed = new Vector2
+                    (
+                        nextSpeed.X / mod,
+                        nextSpeed.Y / mod
+                    ); 
+                }
             }
 
             CurrentSpeed = nextSpeed;
