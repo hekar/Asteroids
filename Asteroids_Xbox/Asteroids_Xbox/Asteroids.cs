@@ -24,9 +24,9 @@ namespace Asteroids_Xbox
         private SpriteBatch spriteBatch;
 
         // Managers
-        private readonly AsteroidManager asteroidManager;
-        private readonly InputManager inputManager;
-        private readonly EntityManager entityManager;
+        private AsteroidManager asteroidManager;
+        private InputManager inputManager;
+        private EntityManager entityManager;
 
         // Screens
         private Titlescreen titleScreen;
@@ -39,10 +39,6 @@ namespace Asteroids_Xbox
         {
             graphics = new GraphicsDeviceManager(this);
 
-            entityManager = new EntityManager();
-            inputManager = new InputManager();
-            asteroidManager = new AsteroidManager(entityManager);
-
             Content.RootDirectory = "Content";
         }
 
@@ -51,10 +47,14 @@ namespace Asteroids_Xbox
         /// </summary>
         protected override void Initialize()
         {
+            entityManager = new EntityManager(Content, GraphicsDevice);
+            inputManager = new InputManager();
+            asteroidManager = new AsteroidManager(entityManager);
+
             titleScreen = new Titlescreen();
             titleScreen.Visible = true;
 
-            player = new Player();
+            player = new Player(entityManager);
 
             entityManager.Add(new Background());
             entityManager.Add(player);

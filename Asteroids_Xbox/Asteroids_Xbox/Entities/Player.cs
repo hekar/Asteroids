@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -13,15 +14,21 @@ namespace Asteroids_Xbox.Entities
 
         private readonly Color BackgroundColor = Color.White;
 
+        private readonly EntityManager entityManager;
+
         public int Health;
 
         public int Lives;
 
         public int Score;
 
-        // TODO: Pass in bullet firing thing
-        public Player()
+        private double previousSeconds;
+
+        private const double bulletFireTime = 0.5;
+
+        public Player(EntityManager entityManager)
         {
+            this.entityManager = entityManager;
         }
 
         public override void Load(ContentManager content)
@@ -83,14 +90,27 @@ namespace Asteroids_Xbox.Entities
             if (keyboard.IsKeyDown(Keys.Space) ||
                 gamepad.Buttons.A == ButtonState.Pressed)
             {
-                FireBullet(CurrentSpeed);
+                FireBullet(new Vector2(5.0f, 5.0f));
             }
         }
 
         private Bullet FireBullet(Vector2 speed)
         {
-            var bullet = new Bullet(this, speed, Rotation);
-            return bullet;
+            // If someone is playing around midnight, they get a lucky shot that
+            // has no delay
+            var totalSeconds = DateTime.Now.TimeOfDay.TotalSeconds;
+            var timeSinceLast = totalSeconds - previousSeconds;
+            if (timeSinceLast > bulletFireTime)
+            {
+                var bullet = new Bullet(this, Position, speed, Rotation);
+                entityManager.Add(bullet);
+                previousSeconds = totalSeconds;
+                return bullet;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

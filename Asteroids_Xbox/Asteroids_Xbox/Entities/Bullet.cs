@@ -7,47 +7,44 @@ using Asteroids_Xbox.Manager;
 
 namespace Asteroids_Xbox.Entities
 {
-    /// <summary>
-    /// TODO: Implement
-    /// </summary>
     class Bullet : AnimatedEntity
     {
+        private const string TextureName = "bullet";
+
         private Vector2 speed;
-        private Player player;
-        private Color BackgroundColor = Color.GhostWhite;
+        private readonly Player player;
+        private readonly Color BackgroundColor = Color.GhostWhite;
+        private readonly EntityManager entityManager;
 
-        private const string BulletTextureName = "Bullet";
-
-        public Bullet(Player player, Vector2 speed, float rotation)
+        public Bullet(EntityManager entityManager, Player player, 
+            Vector2 position, Vector2 speed, float rotation)
         {
+            this.entityManager = entityManager;
             this.player = player;
             this.speed = speed;
             this.Rotation = rotation;
+
+            Position = position;
+            MaxSpeed = 5.0f;
+            MoveSpeed = 5.0f;
+            RotationSpeed = 5.0f;
         }
 
         public override void Load(ContentManager content)
         {
-            Texture2D bulletTexture = content.Load<Texture2D>(BulletTextureName);
-            Animation.Initialize(bulletTexture, Vector2.Zero, 3, 3, 1, 30, BackgroundColor, 1f, true);
-
-            MoveSpeed = this.speed.X;
-            CurrentSpeed = speed;
-            WrapScreen = true;
-
-            Position = new Vector2
-            (
-                GraphicsDevice.Viewport.TitleSafeArea.X + GraphicsDevice.Viewport.TitleSafeArea.Width / 2,
-                GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2
-            );
+            Texture2D texture = content.Load<Texture2D>(TextureName);
+            Animation.Initialize(texture, Vector2.Zero, 5, 5, 1, 30, BackgroundColor, 1f, true);
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
-            base.Update(inputManager, gameTime);
             // Move bullet
             Forward(speed.X, speed.Y);
 
-            // TODO: Check collisions
+            base.Update(inputManager, gameTime);
+
+            // TODO: Remove bullet when it flies off the screen
+            //GraphicsDevice.Viewport.y
         }
 
     }
