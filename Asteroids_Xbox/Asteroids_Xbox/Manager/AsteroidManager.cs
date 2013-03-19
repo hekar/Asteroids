@@ -49,6 +49,11 @@ namespace Asteroids_Xbox.Manager
         /// </summary>
         private int shipCount = 0;
 
+        /// <summary>
+        /// Extra lives
+        /// </summary>
+        private int maxLives = 0;
+
         public AsteroidManager(EntityManager entityManager, Player player)
         {
             this.entityManager = entityManager;
@@ -128,6 +133,7 @@ namespace Asteroids_Xbox.Manager
             freshAsteroids.Clear();
             entityManager.Clear();
             shipCount = 0;
+            maxLives = 0;
         }
 
         /// <summary>
@@ -144,9 +150,7 @@ namespace Asteroids_Xbox.Manager
 
             if (shipCount < 1)
             {
-                var enemy = CreateEnemy(player.Position, content, graphicsDevice);
-                entityManager.Add(enemy);
-                shipCount++;
+                CreateEnemyShip(content, graphicsDevice);
             }
 
             var spawnNewAsteroid = spawnTimeReached && !spawnLimitReached;
@@ -163,6 +167,22 @@ namespace Asteroids_Xbox.Manager
             RemoveDeadAsteroids(content, graphicsDevice, player);
 
             asteroidSpawnLimit = (int)Math.Floor((double)player.Score / 1000) + DefaultAsteroidCount;
+            var previousLives = maxLives;
+            maxLives = (int)Math.Floor((double)player.Score / 10000) + Player.DefaultLives;
+
+            if (previousLives != maxLives)
+            {
+                player.Lives += 1;
+            }
+        }
+
+        private void CreateEnemyShip(ContentManager content, GraphicsDevice graphicsDevice)
+        {
+            var pos = new Vector2(graphicsDevice.Viewport.X, 
+                graphicsDevice.Viewport.Y + random.Next(50, graphicsDevice.Viewport.Height));
+            var enemy = CreateEnemy(pos, content, graphicsDevice);
+            entityManager.Add(enemy);
+            shipCount++;
         }
 
         /// <summary>
@@ -177,7 +197,7 @@ namespace Asteroids_Xbox.Manager
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
                 var asteroid = asteroids[i];
-                if (asteroid.Dead)
+                if (!(asteroid.Killer is EnemyBullet) && asteroid.Dead)
                 {
                     //Add to the player's score
                     player.Score += asteroid.ScoreWorth;
@@ -197,7 +217,9 @@ namespace Asteroids_Xbox.Manager
                         var a1 = new Asteroid(this, player, nextSize);
                         var a2 = new Asteroid(this, player, nextSize);
                         a1.Position = new Vector2(asteroid.Position.X, asteroid.Position.Y + 15);
+                        a1.CurrentSpeed = asteroid.CurrentSpeed;
                         a2.Position = asteroid.Position;
+                        a2.CurrentSpeed = new Vector2(-asteroid.CurrentSpeed.X, -asteroid.CurrentSpeed.Y);
                         splitAsteroids.AddRange(new Asteroid[] { a1, a2 });
                     }
 
@@ -205,7 +227,6 @@ namespace Asteroids_Xbox.Manager
 
                     foreach (var newAsteroid in splitAsteroids)
                     {
-                        newAsteroid.CurrentSpeed = asteroid.CurrentSpeed;
                         entityManager.Add(newAsteroid);
                         asteroids.Add(newAsteroid);
                     }
@@ -261,7 +282,8 @@ namespace Asteroids_Xbox.Manager
                 size = Sizes.Small;
             }
 
-            var enemy = new EnemyShip(entityManager, position, new Vector2(1.0f, 1.0f), size, player);
+            var speed = new Vector2(1.0f, 0.0f);
+            var enemy = new EnemyShip(entityManager, position, speed, size, player);
             enemy.Initialize(content, graphicsDevice);
             return enemy;
         }

@@ -44,7 +44,7 @@ namespace Asteroids_Xbox.Entities
             MaxSpeed = 2.0f;
             MoveSpeed = 2.0f;
             RotationSpeed = 0.0f;
-            WrapScreen = true;
+            WrapScreen = false;
         }
 
         /// <summary>
@@ -56,24 +56,6 @@ namespace Asteroids_Xbox.Entities
         {
             Forward(speed.X, speed.Y);
             base.Update(inputManager, gameTime);
-
-            if (WrapScreenCount > 0)
-            {
-                if (CurrentSpeed.Y < 0.0f)
-                {
-                    if (Position.Y < origin.Y)
-                    {
-                        Kill();
-                    }
-                }
-                else
-                {
-                    if (Position.Y > origin.Y)
-                    {
-                        Kill();
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -86,12 +68,13 @@ namespace Asteroids_Xbox.Entities
             {
                 var asteroid = other as Asteroid;
                 asteroid.Health = 0;
+                asteroid.Killer = this;
                 Kill();
             }
             else if (other is EnemyShip)
             {
                 var enemyShip = other as EnemyShip;
-                enemyShip.Kill();
+                enemyShip.Kill(other);
             }
 
             base.Touch(other);

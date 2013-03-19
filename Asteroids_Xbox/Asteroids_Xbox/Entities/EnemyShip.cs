@@ -3,6 +3,7 @@ using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -12,10 +13,19 @@ namespace Asteroids_Xbox.Entities
     class EnemyShip : AnimatedEntity
     {
         private readonly EntityManager entityManager;
+        private readonly Random random;
         private readonly Color BackgroundColor = Color.White;
 
-        private const double bulletFireTime = 0.5;
+        private const string EnemyExplosionTextureName = "Ship_Explode";
 
+        /// <summary>
+        /// Time between bullet fire times
+        /// </summary>
+        private const double bulletFireTime = 2.0;
+
+        /// <summary>
+        /// Size of the enemy ship
+        /// </summary>
         public Sizes Size { get; set; }
 
         private Texture2D enemyTexture;
@@ -23,10 +33,12 @@ namespace Asteroids_Xbox.Entities
         private Vector2 speed;
         private Player player;
         private GameTime gameTime;
+        private ContentManager content;
 
         public EnemyShip(EntityManager entityManager, Vector2 position, Vector2 speed, Sizes size, Player player)
         {
             this.entityManager = entityManager;
+            random = new Random();
             Position = position;
             this.Size = size;
             this.speed = speed;
@@ -39,6 +51,7 @@ namespace Asteroids_Xbox.Entities
         /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
+            this.content = content;
             switch (this.Size)
             {
                 case Sizes.Small:
@@ -55,9 +68,9 @@ namespace Asteroids_Xbox.Entities
                     break;
             }
 
-            WrapScreen = true;
             MaxSpeed = 5.0f;
             MoveSpeed = 5.0f;
+            WrapScreen = true;
         }
 
 
@@ -69,27 +82,37 @@ namespace Asteroids_Xbox.Entities
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             this.gameTime = gameTime;
-            Rotate(2.0f);
             Move(speed.X, speed.Y);
+
+            Move(0, random.Next(-1, 1));
+
+            var vec = new Vector2((float)random.Next(0, (int)MaxSpeed), (float)random.Next(0, (int)MaxSpeed));
+            vec.Normalize();
+            FireBullet(vec);
+
             base.Update(inputManager, gameTime);
         }
 
         /// <summary>
         /// Kill the ship
         /// </summary>
-        public void Kill()
+        public void Kill(Entity killer)
         {
             entityManager.Remove(this);
-            if (Size == Sizes.Small)
+            if (!(killer is EnemyBullet))
             {
-                player.Score += 1000;
-            }
-            else
-            {
-                player.Score += 200;
-            }
+                if (Size == Sizes.Small)
+                {
+                    player.Score += 1000;
+                }
+                else
+                {
+                    player.Score += 200;
+                }
 
-            // TODO: Explosion
+                var explosion = CreateExplosion(Position, content, GraphicsDevice);
+                entityManager.Add(explosion);
+            }
         }
 
         /// <summary>
@@ -115,5 +138,21 @@ namespace Asteroids_Xbox.Entities
                 return null;
             }
         }
+
+        /// <summary>
+        /// Explosion
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <returns></returns>
+        private Explosion CreateExplosion(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
+        {
+            var explosion = new Explosion(entityManager, EnemyExplosionTextureName);
+            explosion.Initialize(content, graphicsDevice);
+            explosion.Position = new Vector2(position.X, position.Y);
+            return explosion;
+        }
+
     }
 }

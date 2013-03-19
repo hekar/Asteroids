@@ -126,48 +126,45 @@ namespace Asteroids_Xbox.Entities
             var keyboard = inputManager.CurrentKeyboardState;
             var gamepad = inputManager.CurrentGamePadState;
 
-            if (keyboard.IsKeyDown(Keys.F1) ||
-                gamepad.Buttons.Y == ButtonState.Pressed)
+            if (TitlescreenStatus == Entities.TitlescreenStatus.Start)
             {
-                if (gamepad.Buttons.Y == ButtonState.Pressed)
+                if (keyboard.IsKeyDown(Keys.F1) ||
+                    gamepad.Buttons.Y == ButtonState.Pressed)
                 {
-                    isGamepad = true;
+                    if (gamepad.Buttons.Y == ButtonState.Pressed)
+                    {
+                        isGamepad = true;
+                    }
+                    TitlescreenStatus = TitlescreenStatus.Help;
                 }
-                TitlescreenStatus = TitlescreenStatus.Help;
-            }
-            else if (keyboard.IsKeyDown(Keys.Space) ||
-                keyboard.IsKeyDown(Keys.Enter) ||
-                gamepad.Buttons.A == ButtonState.Pressed)
-            {
-                if (Player.Alive)
+                else if (keyboard.IsKeyDown(Keys.Space) ||
+                    keyboard.IsKeyDown(Keys.Enter) ||
+                    gamepad.Buttons.A == ButtonState.Pressed)
                 {
-                    // Resume game
-                    Visible = false;
+                    if (Player.Alive)
+                    {
+                        // Resume game
+                        Visible = false;
+                    }
+                    else
+                    {
+                        // Start new game
+                        Visible = false;
+                        NewGameRequested = true;
+                    }
                 }
-                else
-                {
-                    // Start new game
-                    Visible = false;
-                    NewGameRequested = true;
-                }
-            }
-
-
-            if (inputManager.WasKeyPressed(Keys.Escape) ||
+                else if (inputManager.WasKeyPressed(Keys.Escape) ||
                     inputManager.WasButtonPressed(Buttons.Back))
-            {
-                switch (TitlescreenStatus)
                 {
-                    case TitlescreenStatus.Start:
-                        ExitRequested = true;
-                        break;
-
-                    case TitlescreenStatus.GameOver:
-                    case TitlescreenStatus.Help:
-                        TitlescreenStatus = TitlescreenStatus.Start;
-                        break;
-                    default:
-                        break;
+                    ExitRequested = true;
+                }
+            }
+            else
+            {
+                if (inputManager.WasKeyPressed(Keys.Escape) ||
+                    inputManager.WasButtonPressed(Buttons.Back))
+                {
+                    TitlescreenStatus = TitlescreenStatus.Start;
                 }
             }
 
@@ -182,10 +179,13 @@ namespace Asteroids_Xbox.Entities
             {
                 case TitlescreenStatus.Start:
                     WriteTitle(spriteBatch, "Captain Asteroids");
-                    WriteSubTitle(spriteBatch, "Press Enter (A) to Start");
+                    WriteSubTitle(spriteBatch, "New Game - Enter (A) ");
+                    WriteSubSubTitle(spriteBatch, "Help - F1 (Y), Exit - Escape (Back)");
                     break;
                 case TitlescreenStatus.GameOver:
                     WriteTitle(spriteBatch, "Game Over!");
+                    WriteSubTitle(spriteBatch, string.Format("Score: {0}", Player.Score));
+                    WriteSubSubTitle(spriteBatch, "Menu - Escape (Back)");
                     break;
                 case TitlescreenStatus.Help:
                     WriteHelp(spriteBatch);
@@ -252,6 +252,18 @@ namespace Asteroids_Xbox.Entities
             (
                 GraphicsDevice.Viewport.X + (GraphicsDevice.Viewport.Width / 2) - (offset.X / 2),
                 GraphicsDevice.Viewport.Y + (GraphicsDevice.Viewport.Height / 2) - (offset.Y / 2)
+            );
+
+            spriteBatch.DrawString(font, text, pos, Color.White);
+        }
+
+        private void WriteSubSubTitle(SpriteBatch spriteBatch, string text)
+        {
+            var offset = font.MeasureString(text);
+            var pos = new Vector2
+            (
+                GraphicsDevice.Viewport.X + (GraphicsDevice.Viewport.Width / 2) - (offset.X / 2),
+                GraphicsDevice.Viewport.Y + (GraphicsDevice.Viewport.Height / 1.25f) - (offset.Y / 2)
             );
 
             spriteBatch.DrawString(font, text, pos, Color.White);

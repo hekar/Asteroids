@@ -14,6 +14,11 @@ namespace Asteroids_Xbox.Entities
     class Player : AnimatedEntity
     {
         /// <summary>
+        /// Default lives
+        /// </summary>
+        public const int DefaultLives = 3;
+
+        /// <summary>
         /// Texture for the ship
         /// </summary>
         private const string PlayerTextureName = "shipAnimation";
@@ -86,7 +91,14 @@ namespace Asteroids_Xbox.Entities
         {
             get
             {
-                return (gameTime.TotalGameTime.TotalSeconds - lastRespawnTime) <= protectionTime;
+                if (gameTime != null)
+                {
+                    return (gameTime.TotalGameTime.TotalSeconds - lastRespawnTime) <= protectionTime;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -121,7 +133,7 @@ namespace Asteroids_Xbox.Entities
             Animation.Initialize(playerTexture, Vector2.Zero, 75, 30, 8, 45, BackgroundColor, 1f, true);
 
             Score = 0;
-            Lives = 3;
+            Lives = DefaultLives;
             MoveSpeed = 1.5f;
             MaxSpeed = 2.5f;
             RotationSpeed = 5.0f;
@@ -204,6 +216,24 @@ namespace Asteroids_Xbox.Entities
                 gamepad.Buttons.A == ButtonState.Pressed)
             {
                 FireBullet(new Vector2(5.0f, 5.0f));
+            }
+        }
+
+        bool alternateDraw = false;
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (UnderProtection)
+            {
+                if (alternateDraw)
+                {
+                    base.Draw(spriteBatch);
+                }
+
+                alternateDraw = !alternateDraw;
+            }
+            else
+            {
+                base.Draw(spriteBatch);
             }
         }
 

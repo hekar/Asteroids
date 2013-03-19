@@ -13,6 +13,4 @@ Help Screen
 	-Bug where it prints the same line over and over
 Pause Screen
 	-Needs to have option for new game
-Hyperspace
-	-Player clicks and ship appears randomly on screen somewhere
 Small Asteroid Trajectories

@@ -129,6 +129,7 @@ namespace Asteroids_Xbox.Manager
                 foreach (var other in copy)
                 {
                     if (entity is Bullet && other is Asteroid ||
+                        entity is Bullet && other is EnemyShip ||
                         entity is Asteroid && other is Player ||
                         entity is EnemyBullet && other is Asteroid ||
                         entity is EnemyBullet && other is Player)

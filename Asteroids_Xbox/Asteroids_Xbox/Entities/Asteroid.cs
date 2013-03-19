@@ -32,6 +32,11 @@ namespace Asteroids_Xbox.Entities
         public Sizes Size { get; set; }
 
         /// <summary>
+        /// Entity that killed the asteroid
+        /// </summary>
+        public Entity Killer { get; set; }
+
+        /// <summary>
         /// Is the asteroid dead?
         /// </summary>
         public bool Dead
@@ -142,5 +147,6 @@ namespace Asteroids_Xbox.Entities
 
             base.Touch(other);
         }
+
     }
 }
