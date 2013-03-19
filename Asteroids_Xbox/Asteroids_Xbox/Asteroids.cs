@@ -24,7 +24,7 @@ namespace Asteroids_Xbox
         private SpriteBatch spriteBatch;
 
         // Managers
-        private AsteroidManager asteroidManager;
+        private GameManager asteroidManager;
         private InputManager inputManager;
         private EntityManager entityManager;
 
@@ -172,7 +172,7 @@ namespace Asteroids_Xbox
 
             if (asteroidManager == null)
             {
-                asteroidManager = new AsteroidManager(entityManager, player);
+                asteroidManager = new GameManager(entityManager, player);
             }
             else
             {
