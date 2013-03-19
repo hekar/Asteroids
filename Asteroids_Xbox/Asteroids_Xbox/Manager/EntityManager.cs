@@ -1,22 +1,30 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Asteroids_Xbox.Entities;
 using Asteroids_Xbox.Types;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using System.Diagnostics;
-using Asteroids_Xbox.Entities;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Manager
 {
+    /// <summary>
+    /// Container for all the in game entities
+    /// </summary>
     class EntityManager
     {
-        private readonly List<Entity> entities = new List<Entity>();
-        private readonly List<AnimatedEntity> animatedEntities = new List<AnimatedEntity>();
         private readonly ContentManager contentManager;
         private readonly GraphicsDevice graphicsDevice;
+
+        /// <summary>
+        /// All the entities that are currently in the game
+        /// </summary>
+        private readonly List<Entity> entities = new List<Entity>();
+
+        /// <summary>
+        /// All the animated entities that are currently in the game
+        /// </summary>
+        private readonly List<AnimatedEntity> animatedEntities = new List<AnimatedEntity>();
 
         public EntityManager(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
@@ -24,6 +32,10 @@ namespace Asteroids_Xbox.Manager
             this.graphicsDevice = graphicsDevice;
         }
 
+        /// <summary>
+        /// Add an entity
+        /// </summary>
+        /// <param name="entity"></param>
         public void Add(Entity entity)
         {
             if (!entity.Initialized)
@@ -39,6 +51,10 @@ namespace Asteroids_Xbox.Manager
             }
         }
 
+        /// <summary>
+        /// Remove an entity
+        /// </summary>
+        /// <param name="entity"></param>
         public void Remove(Entity entity)
         {
             entities.Remove(entity);
@@ -49,6 +65,11 @@ namespace Asteroids_Xbox.Manager
             }
         }
 
+        /// <summary>
+        /// Intialize all entities
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
         public void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
         {
             foreach (var entity in entities)
@@ -57,6 +78,11 @@ namespace Asteroids_Xbox.Manager
             }
         }
 
+        /// <summary>
+        /// Handle updates in the gameloop for all entities
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public void Update(InputManager inputManager, GameTime gameTime)
         {
             // We need a copy, because the list may change while iterating
@@ -70,6 +96,10 @@ namespace Asteroids_Xbox.Manager
             CheckCollisions(animatedEntities);
         }
 
+        /// <summary>
+        /// Draw all entities
+        /// </summary>
+        /// <param name="batch"></param>
         public void Draw(SpriteBatch batch)
         {
             foreach (var entity in entities)
@@ -78,6 +108,10 @@ namespace Asteroids_Xbox.Manager
             }
         }
 
+        /// <summary>
+        /// Check collisions between entities
+        /// </summary>
+        /// <param name="entities"></param>
         private void CheckCollisions(List<AnimatedEntity> entities)
         {
             var copy = entities.ToList();
@@ -86,7 +120,9 @@ namespace Asteroids_Xbox.Manager
                 foreach (var other in copy)
                 {
                     if (entity is Bullet && other is Asteroid ||
-                        entity is Player && other is Asteroid)
+                        entity is Player && other is Asteroid ||
+                        entity is EnemyBullet && other is Asteroid ||
+                        entity is EnemyBullet && other is Player)
                     {
                         var collision = entity.CheckCollision(other);
                         if (collision)

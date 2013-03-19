@@ -10,15 +10,18 @@ using Asteroids_Xbox.Manager;
 namespace Asteroids_Xbox.Types
 {
     /// <summary>
-    /// Piez of shit class is a total piez of shit
+    /// This is the base class for all entities in the game. An entity need not be visible, but it can respond to the draw event.
     /// 
-    /// Should had used delegation, but too late. Now dealing with dis piez of shit inheritence shit.
+    /// Otherwise, an entity usually responds to the initialization and update events from the content manager and game loop.
     /// 
-    /// C# I PUNCH U IN TEH FAcE
     /// 
-    /// PIECE OF SHIT, I HATE THIS CLASS
+    /// This game uses an awful inheritance model that was used by older games done in C++ in the early 2000s.
     /// 
-    /// F!#$^$&$@%$ %*&*$^#@%! $!%@^&#%!@ S#@!$
+    /// Some game development kits and engines still carry this legacy (such as UT3), but most of them are being replaced
+    /// (ie. UT4). Composition is the preferred method now, but due to a lack of a dependency injection framework and
+    /// being too lazy to make one for this project, this classical model was choosen.
+    /// 
+    /// Also, if C# had mixins, this would be a lot easier.
     /// </summary>
     abstract class Entity : Initializable, Updatable, Drawable
     {
@@ -78,16 +81,27 @@ namespace Asteroids_Xbox.Types
             this.Position = new Vector2(this.Position.X + x, this.Position.Y + y);
         }
 
+        /// <summary>
+        /// Move forward at the move speed
+        /// </summary>
         public void Forward()
         {
             Forward(MoveSpeed, MoveSpeed);
         }
 
+        /// <summary>
+        /// Move backward at the move speed
+        /// </summary>
         public void Backward()
         {
             Forward(-MoveSpeed, -MoveSpeed);
         }
 
+        /// <summary>
+        /// Move the entity forward at the specified speed. The direction is calculated according to rotation
+        /// </summary>
+        /// <param name="speedModX"></param>
+        /// <param name="speedModY"></param>
         protected void Forward(float speedModX, float speedModY)
         {
             double rad = MathHelper.ToRadians(Rotation);
@@ -120,6 +134,11 @@ namespace Asteroids_Xbox.Types
             CurrentSpeed = nextSpeed;
         }
 
+        /// <summary>
+        /// Rotate the entity in degrees.
+        /// This function takes into consideration that degrees cannot go below 0 or above 359.
+        /// </summary>
+        /// <param name="angle">Angle in degrees</param>
         public virtual void Rotate(float angle)
         {
             var nextRotation = Rotation + angle;

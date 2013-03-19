@@ -6,6 +6,9 @@ using Asteroids_Xbox.Types;
 
 namespace Asteroids_Xbox.Types
 {
+    /// <summary>
+    /// Sprite strip handler, allowing animations to be performed.
+    /// </summary>
     class Animation : Drawable
     {
         /// <summary>
@@ -83,12 +86,21 @@ namespace Asteroids_Xbox.Types
         /// </summary>
         public bool Looping;
 
+        /// <summary>
+        /// Position of the animation on the screen
+        /// </summary>
         public Vector2 Position { get; set; }
 
+        /// <summary>
+        /// Current rotation angle in degrees
+        /// </summary>
         public float Rotation { get; set; }
 
         public float LayerDepth;
 
+        /// <summary>
+        /// Has the animation been initialized by the Initialize method?
+        /// </summary>
         private bool initialized;
 
         public Animation()
@@ -97,6 +109,18 @@ namespace Asteroids_Xbox.Types
             ShouldDraw = false;
         }
 
+        /// <summary>
+        /// Initialize the animation. This method must be called before the animation is ready to be drawn.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="frameWidth"></param>
+        /// <param name="frameHeight"></param>
+        /// <param name="frameCount"></param>
+        /// <param name="frametime"></param>
+        /// <param name="color"></param>
+        /// <param name="scale"></param>
+        /// <param name="looping"></param>
         public void Initialize(Texture2D texture, Vector2 position,
             int frameWidth, int frameHeight, int frameCount,
             int frametime, Color color, float scale, bool looping)
@@ -123,6 +147,10 @@ namespace Asteroids_Xbox.Types
             texture.GetData(ColorData);
         }
 
+        /// <summary>
+        /// Handled on the gameloop update
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             // Do not update the game if we are not active
@@ -171,6 +199,10 @@ namespace Asteroids_Xbox.Types
             );
         }
 
+        /// <summary>
+        /// Handled on drawing. This draws the entity
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ShouldDraw)
@@ -193,6 +225,9 @@ namespace Asteroids_Xbox.Types
         }
     }
 
+    /// <summary>
+    /// The animation was not initialized through the Initialize method.
+    /// </summary>
     public class AnimationNotInitializedException : Exception
     {
         public AnimationNotInitializedException()

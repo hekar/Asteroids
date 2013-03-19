@@ -40,7 +40,7 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        private bool UnderProtection
+        public bool UnderProtection
         {
             get
             {
@@ -159,18 +159,23 @@ namespace Asteroids_Xbox.Entities
         {
             if (!UnderProtection && other is Asteroid)
             {
-                Lives -= 1;
-                if (!Alive)
-                {
-                    // Game over...
-                }
-                else
-                {
-                    Respawn(true);
-                }
+                Kill();
             }
 
             base.Touch(other);
+        }
+
+        public void Kill()
+        {
+            Lives -= 1;
+            if (!Alive)
+            {
+                // Game over...
+            }
+            else
+            {
+                Respawn(true);
+            }
         }
 
         public Explosion CreateExplosion(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)

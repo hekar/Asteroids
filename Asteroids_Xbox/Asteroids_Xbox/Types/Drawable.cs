@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Types
 {
+    /// <summary>
+    /// Interface for implementing a drawable event for an entity or object
+    /// </summary>
     interface Drawable
     {
         /// <summary>

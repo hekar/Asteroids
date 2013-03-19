@@ -8,12 +8,18 @@ using Asteroids_Xbox.Entities;
 namespace Asteroids_Xbox.Types
 {
     /// <summary>
-    /// THIS CLASS SUCKS.
+    /// Animated entity. This is an entity which contains an animation and collision detection.
     /// </summary>
     abstract class AnimatedEntity : Entity
     {
+        /// <summary>
+        /// The animation for the entity
+        /// </summary>
         public Animation Animation { get; set; }
 
+        /// <summary>
+        /// The graphics device for the game
+        /// </summary>
         protected GraphicsDevice GraphicsDevice { get; private set; }
 
         /// <summary>
@@ -32,6 +38,18 @@ namespace Asteroids_Xbox.Types
         /// </summary>
         public bool WrapScreen { get; set; }
 
+        /// <summary>
+        /// The number of times the entity has wrapped across the screen
+        /// 
+        /// See property WrapScreen for more details
+        /// </summary>
+        public int WrapScreenCount { get; private set; }
+
+        /// <summary>
+        /// Bounds of the entity
+        /// 
+        /// This is the position and width/height
+        /// </summary>
         public Rectangle Bounds
         {
             get
@@ -40,6 +58,9 @@ namespace Asteroids_Xbox.Types
             }
         }
 
+        /// <summary>
+        /// Radius of the collision circle
+        /// </summary>
         public float Radius
         {
             get
@@ -77,13 +98,25 @@ namespace Asteroids_Xbox.Types
             }
         }
 
+        public AnimatedEntity()
+        {
+            WrapScreen = false;
+        }
+
+        /// <summary>
+        /// On Loading of content
+        /// </summary>
+        /// <param name="content"></param>
         public abstract void Load(ContentManager content);
 
+        /// <summary>
+        /// Initialize the entity and load its resources
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
         public override void Initialize(ContentManager content, GraphicsDevice graphicsDevice)
         {
             GraphicsDevice = graphicsDevice;
-
-            WrapScreen = false;
 
             Animation = new Animation();
             Load(content);
@@ -91,6 +124,11 @@ namespace Asteroids_Xbox.Types
             Initialized = true;
         }
 
+        /// <summary>
+        /// Update the entity. This is usually performed in the gameloop
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Animation.Position = Position;
@@ -99,11 +137,20 @@ namespace Asteroids_Xbox.Types
             Move(CurrentSpeed.X, CurrentSpeed.Y);
         }
 
+        /// <summary>
+        /// Draw the animation to the screen
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             Animation.Draw(spriteBatch);
         }
 
+        /// <summary>
+        /// Translate or move the entity x and y units
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public override void Move(float x, float y)
         {
             base.Move(x, y);
@@ -131,12 +178,21 @@ namespace Asteroids_Xbox.Types
             }
         }
 
+        /// <summary>
+        /// Rotate the entity and animation. This changes the forward/backward directions
+        /// </summary>
+        /// <param name="angle"></param>
         public override void Rotate(float angle)
         {
             base.Rotate(angle);
             Animation.Rotation = Rotation;
         }
 
+        /// <summary>
+        /// Check if this entity has collided with another entity
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool CheckCollision(AnimatedEntity other)
         {
             var distance = Math.Abs(Vector2.Distance(this.CenterPosition, other.CenterPosition));
@@ -144,18 +200,16 @@ namespace Asteroids_Xbox.Types
             var inOtherRadius = distance < other.Radius;
             if (inThisRadius || inOtherRadius)
             {
-                // Perform pixel check now
-                var area = (this.Bounds.Width * this.Bounds.Height);
-                var otherArea = (other.Bounds.Width * other.Bounds.Height);
-
-                var smaller = (area > otherArea) ? other : this;
-                var larger = (area > otherArea) ? this : other;
-
                 // TODO: later after i eat these muffins
                 // and have some ice cream and watch
                 // 50 HOURS OF KDRAMAS OMG, NEW SERIES FOUND GOMG AOSDMF ASDFJKSADJG ASDFOSDMAGOMSDAFKLASDHJFLKASDFKLHASDFAJLSDFHASJKDFHASJDKFHASDKLFHASKJDFHASJKDHKJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJF
-                //return PerPixelCollision(smaller, larger);\
-
+                // Perform pixel check now
+                //var area = (this.Bounds.Width * this.Bounds.Height);
+                //var otherArea = (other.Bounds.Width * other.Bounds.Height);
+                //
+                //var smaller = (area > otherArea) ? other : this;
+                //var larger = (area > otherArea) ? this : other;
+                //return PerPixelCollision(smaller, larger);
                 return true;
             }
             else
@@ -164,11 +218,13 @@ namespace Asteroids_Xbox.Types
             }
         }
 
-        public virtual void Touch(AnimatedEntity other)
-        {
-        }
-
-        static bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)
+        /// <summary>
+        /// TODO: Implement this
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="e2"></param>
+        /// <returns></returns>
+        private bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)
         {
             var at = e1.Animation.Transformations;
             var afw = e1.Animation.FrameWidth;
@@ -208,6 +264,16 @@ namespace Asteroids_Xbox.Types
             }
             // If no collision occurred by now, we're clear.
             return false;
+        }
+
+        /// <summary>
+        /// Handle a touch event with another entity.
+        /// 
+        /// This occurs when two entities collide
+        /// </summary>
+        /// <param name="other">The other entity that has been collided with</param>
+        public virtual void Touch(AnimatedEntity other)
+        {
         }
     }
 }

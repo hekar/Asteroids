@@ -1,4 +1,12 @@
 namespace Asteroids_Xbox.Types
 {
-    public enum Sizes { Small = 1, Medium, Large };
+    /// <summary>
+    /// Enum for size definitions
+    /// </summary>
+    public enum Sizes
+    {
+        Small = 1,
+        Medium,
+        Large
+    }
 }
