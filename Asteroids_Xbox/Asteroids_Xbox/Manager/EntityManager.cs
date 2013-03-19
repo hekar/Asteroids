@@ -143,5 +143,10 @@ namespace Asteroids_Xbox.Manager
                 }
             }
         }
+
+        public List<Entity> List()
+        {
+            return entities;
+        }
     }
 }

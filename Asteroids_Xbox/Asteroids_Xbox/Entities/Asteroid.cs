@@ -142,7 +142,10 @@ namespace Asteroids_Xbox.Entities
             if (other is Player)
             {
                 var player = other as Player;
-                player.Kill();
+                if (!player.UnderProtection)
+                {
+                    player.Kill();
+                }
             }
 
             base.Touch(other);

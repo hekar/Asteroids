@@ -74,7 +74,7 @@ namespace Asteroids_Xbox.Entities
             else if (other is EnemyShip)
             {
                 var enemyShip = other as EnemyShip;
-                enemyShip.Kill(other);
+                enemyShip.Kill(this);
             }
 
             base.Touch(other);

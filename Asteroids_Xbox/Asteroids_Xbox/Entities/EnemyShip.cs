@@ -98,7 +98,8 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public void Kill(Entity killer)
         {
-            if (!(killer is EnemyBullet))
+            var enemyBullet = (killer is EnemyBullet) || (killer is EnemyShip);
+            if (!enemyBullet)
             {
                 entityManager.Remove(this);
 

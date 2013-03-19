@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Asteroids_Xbox.Entities;
 using Microsoft.Xna.Framework;
@@ -18,6 +19,11 @@ namespace Asteroids_Xbox.Manager
         private readonly Random random;
 
         private const int DefaultAsteroidCount = 3;
+
+        /// <summary>
+        /// Time between ship spawns
+        /// </summary>
+        private const double shipSpawnTime = 15.0;
 
         /// <summary>
         /// List of all asteroids
@@ -40,6 +46,11 @@ namespace Asteroids_Xbox.Manager
         private TimeSpan lastAsteroidSpawnTime;
 
         /// <summary>
+        /// Last time a ship was spawned
+        /// </summary>
+        private double lastShipSpawnTime;
+
+        /// <summary>
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
         private int asteroidSpawnLimit = DefaultAsteroidCount;
@@ -47,12 +58,18 @@ namespace Asteroids_Xbox.Manager
         /// <summary>
         /// Number of ships on the map
         /// </summary>
-        private int shipCount = 0;
+        private int shipCount
+        {
+            get
+            {
+                return entityManager.List().Where(e => e is EnemyShip).Count();
+            }
+        }
 
         /// <summary>
         /// Extra lives
         /// </summary>
-        private int maxLives = 0;
+        private int maxLives = 0;        
 
         public AsteroidManager(EntityManager entityManager, Player player)
         {
@@ -132,7 +149,6 @@ namespace Asteroids_Xbox.Manager
             asteroids.Clear();
             freshAsteroids.Clear();
             entityManager.Clear();
-            shipCount = 0;
             maxLives = 0;
         }
 
@@ -148,9 +164,10 @@ namespace Asteroids_Xbox.Manager
             var spawnTimeReached = (gameTime.TotalGameTime - lastAsteroidSpawnTime) > asteroidSpawnTime;
             var spawnLimitReached = freshAsteroids.Count >= asteroidSpawnLimit;
 
-            if (shipCount < 1)
+            if ((gameTime.TotalGameTime.TotalSeconds - lastShipSpawnTime) > shipSpawnTime)
             {
                 CreateEnemyShip(content, graphicsDevice);
+                lastShipSpawnTime = gameTime.TotalGameTime.TotalSeconds;
             }
 
             var spawnNewAsteroid = spawnTimeReached && !spawnLimitReached;
@@ -182,7 +199,6 @@ namespace Asteroids_Xbox.Manager
                 graphicsDevice.Viewport.Y + random.Next(50, graphicsDevice.Viewport.Height));
             var enemy = CreateEnemy(pos, content, graphicsDevice);
             entityManager.Add(enemy);
-            shipCount++;
         }
 
         /// <summary>
