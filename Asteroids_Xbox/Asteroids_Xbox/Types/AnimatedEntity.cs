@@ -121,6 +121,8 @@ namespace Asteroids_Xbox.Types
             Animation = new Animation();
             Load(content);
 
+            WrapScreenCount = 0;
+
             Initialized = true;
         }
 
@@ -157,6 +159,7 @@ namespace Asteroids_Xbox.Types
 
             if (WrapScreen)
             {
+                var previousPosition = Position;
                 // Make sure that the unit does not go out of bounds, but instead wraps across the screen
                 if (Position.X <= 0.0f)
                 {
@@ -175,6 +178,11 @@ namespace Asteroids_Xbox.Types
                     Position.X % GraphicsDevice.Viewport.Width,
                     Position.Y % GraphicsDevice.Viewport.Height
                 );
+
+                if (previousPosition != Position)
+                {
+                    WrapScreenCount++;
+                }
             }
         }
 
