@@ -107,11 +107,14 @@ namespace Asteroids_Xbox
                 // Hack: Show titlescreen/Pause game
                 if (exitPressed)
                 {
-                    //pause screen
+                    // Game is paused
+                    titleScreen.TitlescreenStatus = TitlescreenStatus.Pause;
                     titleScreen.Visible = true;
                 }
                 else if (!player.Alive)
                 {
+                    // Gameover
+                    titleScreen.TitlescreenStatus = TitlescreenStatus.GameOver;
                     titleScreen.Visible = true;
                 }
                 else

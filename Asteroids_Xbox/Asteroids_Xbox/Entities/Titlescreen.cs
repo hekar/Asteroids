@@ -28,6 +28,7 @@ namespace Asteroids_Xbox.Entities
     class Titlescreen : AnimatedEntity
     {
         public Player Player { get; set; }
+        public TitlescreenStatus TitlescreenStatus { get; set; }
 
         private bool visible;
         public bool Visible
@@ -58,7 +59,6 @@ namespace Asteroids_Xbox.Entities
         public bool ExitRequested { get; private set; }
 
         private SpriteFont font;
-        private TitlescreenStatus gameStatus;
         private Song menuSong;
         private Song gameSong;
         private bool isGamepad;
@@ -72,7 +72,7 @@ namespace Asteroids_Xbox.Entities
         {
             NewGameRequested = false;
             ExitRequested = false;
-            gameStatus = TitlescreenStatus.Start;
+            TitlescreenStatus = TitlescreenStatus.Start;
             font = content.Load<SpriteFont>("gameFont");
 
             menuSong = content.Load<Song>("sound/menuMusic");
@@ -122,7 +122,7 @@ namespace Asteroids_Xbox.Entities
                 {
                     isGamepad = true;
                 }
-                gameStatus = TitlescreenStatus.Help;
+                TitlescreenStatus = TitlescreenStatus.Help;
             }
             else if (keyboard.IsKeyDown(Keys.Space) ||
                 keyboard.IsKeyDown(Keys.Enter) ||
@@ -141,10 +141,11 @@ namespace Asteroids_Xbox.Entities
                 }
             }
 
+
             if (inputManager.WasKeyPressed(Keys.Escape) ||
                     inputManager.WasButtonPressed(Buttons.Back))
             {
-                switch (gameStatus)
+                switch (TitlescreenStatus)
                 {
                     case TitlescreenStatus.Start:
                         ExitRequested = true;
@@ -152,7 +153,7 @@ namespace Asteroids_Xbox.Entities
 
                     case TitlescreenStatus.GameOver:
                     case TitlescreenStatus.Help:
-                        gameStatus = TitlescreenStatus.Start;
+                        TitlescreenStatus = TitlescreenStatus.Start;
                         break;
                     default:
                         break;
@@ -166,7 +167,7 @@ namespace Asteroids_Xbox.Entities
         {
             base.Draw(spriteBatch);
 
-            switch (gameStatus)
+            switch (TitlescreenStatus)
             {
                 case TitlescreenStatus.Start:
                     WriteTitleMessage(spriteBatch, "Captain Asteroids");
