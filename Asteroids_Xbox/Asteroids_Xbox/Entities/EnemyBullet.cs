@@ -1,5 +1,6 @@
 ﻿using Asteroids_Xbox.Manager;
 using Microsoft.Xna.Framework;
+using Asteroids_Xbox.Types;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -10,9 +11,16 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class EnemyBullet : Bullet
     {
-        public EnemyBullet(EntityManager entityManager,
-            Vector2 position, Vector2 speed, float rotation) : base(entityManager, position, speed, rotation)
+        /// <summary>
+        /// The ship that fired this bullet
+        /// </summary>
+        private EnemyShip ship;
+
+        public EnemyBullet(EntityManager entityManager, EnemyShip ship,
+            Vector2 position, Vector2 speed, float rotation) : 
+            base(entityManager, position, speed, rotation)
         {
+            this.ship = ship;
         }
 
         /// <summary>
@@ -28,9 +36,16 @@ namespace Asteroids_Xbox.Entities
                 {
                     player.Kill();
                 }
-            }
 
-            base.Touch(other);
+                Kill();
+            }
+            else if (other is Asteroid && ship.Size == Sizes.Large)
+            {
+                var asteroid = other as Asteroid;
+                asteroid.Health = 0;
+                asteroid.Killer = this;
+                Kill();
+            }
         }
     }
 }

@@ -75,6 +75,7 @@ namespace Asteroids_Xbox.Entities
             {
                 var enemyShip = other as EnemyShip;
                 enemyShip.Kill(this);
+                Kill();
             }
 
             base.Touch(other);
@@ -83,7 +84,7 @@ namespace Asteroids_Xbox.Entities
         /// <summary>
         /// Destroy the bullet
         /// </summary>
-        private void Kill()
+        protected void Kill()
         {
             entityManager.Remove(this);
         }
