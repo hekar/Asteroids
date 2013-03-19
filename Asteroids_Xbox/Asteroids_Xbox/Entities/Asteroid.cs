@@ -50,7 +50,7 @@ namespace Asteroids_Xbox.Entities
         /// <summary>
         /// Asteroid manager
         /// </summary>
-        private readonly AsteroidManager asteroidManager;
+        private readonly GameManager asteroidManager;
 
         /// <summary>
         /// Player
@@ -62,12 +62,12 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         private Texture2D asteroidTexture;
 
-        public Asteroid(AsteroidManager asteroidManager, Player player)
+        public Asteroid(GameManager asteroidManager, Player player)
             : this(asteroidManager, player, Sizes.Large)
         {
         }
 
-        public Asteroid(AsteroidManager asteroidManager, Player player, Sizes newSize)
+        public Asteroid(GameManager asteroidManager, Player player, Sizes newSize)
         {
             this.asteroidManager = asteroidManager;
             this.player = player;
