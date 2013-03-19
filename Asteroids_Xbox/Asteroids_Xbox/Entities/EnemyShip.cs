@@ -86,7 +86,7 @@ namespace Asteroids_Xbox.Entities
 
             Move(0, random.Next(-1, 1));
 
-            var vec = new Vector2((float)random.Next(0, (int)MaxSpeed), (float)random.Next(0, (int)MaxSpeed));
+            var vec = new Vector2((float)random.Next(-(int)MaxSpeed, (int)MaxSpeed), (float)random.Next(-(int)MaxSpeed, (int)MaxSpeed));
             vec.Normalize();
             FireBullet(vec);
 
@@ -98,9 +98,10 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public void Kill(Entity killer)
         {
-            entityManager.Remove(this);
             if (!(killer is EnemyBullet))
             {
+                entityManager.Remove(this);
+
                 if (Size == Sizes.Small)
                 {
                     player.Score += 1000;
@@ -126,7 +127,7 @@ namespace Asteroids_Xbox.Entities
             var timeSinceLast = totalSeconds - previousSeconds;
             if (timeSinceLast > bulletFireTime)
             {
-                Vector2 bulletPosition = new Vector2(Position.X + (Width / 2), Position.Y + (Height / 2));
+                Vector2 bulletPosition = new Vector2(Position.X - (Width / 2), Position.Y - (Height / 2));
                 var bullet = new EnemyBullet(entityManager, bulletPosition, speed, Rotation);
                 entityManager.Add(bullet);
                 bullet.laserSound.Play();
