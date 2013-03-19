@@ -1,0 +1,15 @@
+﻿Fix bullet origin location
+	-Rotation on bullet needs to be same as ship?
+Create enemy ship
+	-Implement ship flying across screen
+	-Small
+		-Needs to shoot at player
+	-Large
+		-Shoot at random
+Help Screen
+	-Bug where it prints the same line over and over
+Pause Screen
+	-Needs to have option for new game
+Hyperspace
+	-Player clicks and ship appears randomly on screen somewhere
+Small Asteroid Trajectories
