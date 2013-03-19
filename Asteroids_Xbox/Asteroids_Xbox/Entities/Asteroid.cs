@@ -26,6 +26,9 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public int ScoreWorth { get; set; }
 
+        /// <summary>
+        /// Size of the asteroid
+        /// </summary>
         public Sizes Size { get; set; }
 
         /// <summary>
@@ -39,8 +42,19 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
+        /// <summary>
+        /// Asteroid manager
+        /// </summary>
         private readonly AsteroidManager asteroidManager;
+
+        /// <summary>
+        /// Player
+        /// </summary>
         private readonly Player player;
+
+        /// <summary>
+        /// Texture
+        /// </summary>
         private Texture2D asteroidTexture;
 
         public Asteroid(AsteroidManager asteroidManager, Player player)
@@ -55,6 +69,10 @@ namespace Asteroids_Xbox.Entities
             this.Size = newSize;
         }
 
+        /// <summary>
+        /// Load the asteroid resources
+        /// </summary>
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
             switch (this.Size)
@@ -78,20 +96,42 @@ namespace Asteroids_Xbox.Entities
 
             Health = 50;
             Damage = 100;
-            ScoreWorth = 100;
+
+            if (Size == Sizes.Large)
+            {
+                ScoreWorth = 20;
+            }
+            else if (Size == Sizes.Medium)
+            {
+                ScoreWorth = 50;
+            }
+            else if (Size == Sizes.Small)
+            {
+                ScoreWorth = 100;
+            }
 
             MoveSpeed = 1.0f;
             MaxSpeed = MoveSpeed;
             RotationSpeed = 2.0f;
             WrapScreen = true;
+
         }
 
+        /// <summary>
+        /// Handle update on gameloop
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Rotate(RotationSpeed);
             base.Update(inputManager, gameTime);
         }
 
+        /// <summary>
+        /// Handle collisions
+        /// </summary>
+        /// <param name="other"></param>
         public override void Touch(AnimatedEntity other)
         {
             if (other is Player)

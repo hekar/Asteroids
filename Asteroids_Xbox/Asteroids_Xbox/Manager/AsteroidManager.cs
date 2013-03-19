@@ -9,12 +9,13 @@ using Asteroids_Xbox.Types;
 namespace Asteroids_Xbox.Manager
 {
     /// <summary>
-    /// TODO: Implement levels and difficulty increases, etc
+    /// 
     /// </summary>
     class AsteroidManager
     {
         private readonly EntityManager entityManager;
-        private readonly Random random = new Random();
+        private readonly Player player;
+        private readonly Random random;
 
         private const int DefaultAsteroidCount = 3;
 
@@ -28,24 +29,44 @@ namespace Asteroids_Xbox.Manager
         /// </summary>
         private readonly List<Asteroid> freshAsteroids = new List<Asteroid>();
 
-        // The rate at which the asteroids appear
+        /// <summary>
+        /// The rate at which asteroids appear
+        /// </summary>
         private readonly TimeSpan asteroidSpawnTime = TimeSpan.FromSeconds(1.5f);
-        private TimeSpan previousSpawnTime;
+
+        /// <summary>
+        /// The last time an asteroid spawned
+        /// </summary>
+        private TimeSpan lastAsteroidSpawnTime;
 
         /// <summary>
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
         private int asteroidSpawnLimit = DefaultAsteroidCount;
-        int shitCount = 0;
-        public AsteroidManager(EntityManager entityManager)
+
+        /// <summary>
+        /// Number of ships on the map
+        /// </summary>
+        private int shipCount = 0;
+
+        public AsteroidManager(EntityManager entityManager, Player player)
         {
             this.entityManager = entityManager;
+            this.player = player;
+
+            random = new Random();
 
             // Set the time keepers to zero
-            previousSpawnTime = TimeSpan.Zero;
+            lastAsteroidSpawnTime = TimeSpan.Zero;
         }
 
-        public Asteroid CreateAsteroid(ContentManager content, GraphicsDevice graphicsDevice, Player player)
+        /// <summary>
+        /// Create an asteroid
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <returns></returns>
+        private Asteroid CreateAsteroid(ContentManager content, GraphicsDevice graphicsDevice)
         {
             // Create an asteroid
             var asteroid = new Asteroid(this, player);
@@ -87,6 +108,10 @@ namespace Asteroids_Xbox.Manager
             return asteroid;
         }
 
+        /// <summary>
+        /// Remove an asteroid from the asteroid manager
+        /// </summary>
+        /// <param name="asteroid"></param>
         public void Remove(Asteroid asteroid)
         {
             asteroids.Remove(asteroid);
@@ -94,36 +119,60 @@ namespace Asteroids_Xbox.Manager
             entityManager.Remove(asteroid);
         }
 
+        /// <summary>
+        /// Clear the asteroid manager
+        /// </summary>
         public void Clear()
         {
             asteroids.Clear();
             freshAsteroids.Clear();
             entityManager.Clear();
+            shipCount = 0;
         }
 
+        /// <summary>
+        /// Update handled on game loop
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="player"></param>
+        /// <param name="gameTime"></param>
         public void Update(ContentManager content, GraphicsDevice graphicsDevice, Player player, GameTime gameTime)
         {
-            var spawnTimeReached = (gameTime.TotalGameTime - previousSpawnTime) > asteroidSpawnTime;
+            var spawnTimeReached = (gameTime.TotalGameTime - lastAsteroidSpawnTime) > asteroidSpawnTime;
             var spawnLimitReached = freshAsteroids.Count >= asteroidSpawnLimit;
 
-            if (shitCount < 1)
+            if (shipCount < 1)
             {
                 var enemy = CreateEnemy(player.Position, content, graphicsDevice);
                 entityManager.Add(enemy);
-                shitCount++;
+                shipCount++;
             }
 
             var spawnNewAsteroid = spawnTimeReached && !spawnLimitReached;
             if (spawnNewAsteroid)
             {
-                previousSpawnTime = gameTime.TotalGameTime;
+                lastAsteroidSpawnTime = gameTime.TotalGameTime;
 
                 // Add an asteroid
-                var asteroid = CreateAsteroid(content, graphicsDevice, player);
+                var asteroid = CreateAsteroid(content, graphicsDevice);
                 freshAsteroids.Add(asteroid);
                 entityManager.Add(asteroid);
             }
 
+            RemoveDeadAsteroids(content, graphicsDevice, player);
+
+            asteroidSpawnLimit = (int)Math.Floor((double)player.Score / 1000) + DefaultAsteroidCount;
+        }
+
+        /// <summary>
+        /// Remove dead asteroids from the map
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="player"></param>
+        private void RemoveDeadAsteroids(ContentManager content, GraphicsDevice graphicsDevice, Player player)
+        {
             // Remove dead asteroids
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
@@ -162,10 +211,16 @@ namespace Asteroids_Xbox.Manager
                     }
                 }
             }
-
-            asteroidSpawnLimit = (int)Math.Floor((double)player.Score / 1000) + DefaultAsteroidCount;
         }
 
+        /// <summary>
+        /// Create asteroid explosion after an asteroid has been killed
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="position"></param>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <returns></returns>
         private Explosion CreateExplosion(Sizes size, Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
         {
             Func<Sizes, String> fun = (explosionSize) =>
@@ -191,10 +246,22 @@ namespace Asteroids_Xbox.Manager
             return explosion;
         }
 
-        ///This does not belong here...
+        /// <summary>
+        /// This does not belong here...
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <returns></returns>
         public EnemyShip CreateEnemy(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
         {
-            var enemy = new EnemyShip(entityManager, position, new Vector2(1.0f, 1.0f), Sizes.Large);
+            Sizes size = Sizes.Large;
+            if (player.Score > 10000)
+            {
+                size = Sizes.Small;
+            }
+
+            var enemy = new EnemyShip(entityManager, position, new Vector2(1.0f, 1.0f), size, player);
             enemy.Initialize(content, graphicsDevice);
             return enemy;
         }

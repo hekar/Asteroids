@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Bullet for a the player
+    /// </summary>
     class Bullet : AnimatedEntity
     {
         private const string TextureName = "bullet";
@@ -28,6 +31,10 @@ namespace Asteroids_Xbox.Entities
             Position = position;
         }
 
+        /// <summary>
+        /// Load the content for the bullet
+        /// </summary>
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
             laserSound = content.Load<SoundEffect>("sound/laserFire");
@@ -40,8 +47,16 @@ namespace Asteroids_Xbox.Entities
             WrapScreen = true;
         }
 
+        /// <summary>
+        /// Update the bullet on the game loop
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
+            Forward(speed.X, speed.Y);
+            base.Update(inputManager, gameTime);
+
             if (WrapScreenCount > 0)
             {
                 if (CurrentSpeed.Y < 0.0f)
@@ -59,11 +74,12 @@ namespace Asteroids_Xbox.Entities
                     }
                 }
             }
-
-            Forward(speed.X, speed.Y);
-            base.Update(inputManager, gameTime);
         }
 
+        /// <summary>
+        /// Handle collisions with other entities
+        /// </summary>
+        /// <param name="other"></param>
         public override void Touch(AnimatedEntity other)
         {
             if (other is Asteroid)
@@ -72,10 +88,18 @@ namespace Asteroids_Xbox.Entities
                 asteroid.Health = 0;
                 Kill();
             }
+            else if (other is EnemyShip)
+            {
+                var enemyShip = other as EnemyShip;
+                enemyShip.Kill();
+            }
 
             base.Touch(other);
         }
 
+        /// <summary>
+        /// Destroy the bullet
+        /// </summary>
         private void Kill()
         {
             entityManager.Remove(this);

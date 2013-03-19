@@ -6,8 +6,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Background image entity
+    /// </summary>
     class Background : AnimatedEntity
     {
+        /// <summary>
+        /// Background textures
+        /// </summary>
         private readonly string[] BackgroundContentNames = new string[]
         {
             "space1"

@@ -5,6 +5,8 @@ namespace Asteroids_Xbox.Entities
 {
     /// <summary>
     /// Extension of a bullet that may also kill the player.
+    /// 
+    /// Fired from the enemy ship
     /// </summary>
     class EnemyBullet : Bullet
     {

@@ -12,10 +12,11 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class ScoreDisplay : Entity
     {
-        private SpriteFont font;
         private readonly List<Player> players = new List<Player>();
-        private GraphicsDevice graphicsDevice;
         private readonly Color FontColor = Color.FloralWhite;
+
+        private SpriteFont font;
+        private GraphicsDevice graphicsDevice;
 
         public ScoreDisplay(List<Player> players)
         {

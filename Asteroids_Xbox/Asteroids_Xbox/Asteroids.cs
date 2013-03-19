@@ -168,16 +168,17 @@ namespace Asteroids_Xbox
                 inputManager = new InputManager();
             }
 
+            player = new Player(entityManager);
+
             if (asteroidManager == null)
             {
-                asteroidManager = new AsteroidManager(entityManager);
+                asteroidManager = new AsteroidManager(entityManager, player);
             }
             else
             {
                 asteroidManager.Clear();
             }
 
-            player = new Player(entityManager);
 
             if (titleScreen == null)
             {

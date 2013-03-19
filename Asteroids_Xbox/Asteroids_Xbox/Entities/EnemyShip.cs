@@ -1,4 +1,3 @@
-using System;
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
@@ -7,24 +6,37 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Enemy ship can either be small or large
+    /// </summary>
     class EnemyShip : AnimatedEntity
     {
         private readonly EntityManager entityManager;
-        private Texture2D enemyTexture;
-        private const double bulletFireTime = 0.5;
-        private double previousSeconds;
-        private Vector2 speed;
         private readonly Color BackgroundColor = Color.White;
+
+        private const double bulletFireTime = 0.5;
+
         public Sizes Size { get; set; }
 
-        public EnemyShip(EntityManager entityManager, Vector2 position, Vector2 speed, Sizes newSize)
+        private Texture2D enemyTexture;
+        private double previousSeconds;
+        private Vector2 speed;
+        private Player player;
+        private GameTime gameTime;
+
+        public EnemyShip(EntityManager entityManager, Vector2 position, Vector2 speed, Sizes size, Player player)
         {
             this.entityManager = entityManager;
             Position = position;
-            this.Size = newSize;
+            this.Size = size;
             this.speed = speed;
+            this.player = player;
         }
 
+        /// <summary>
+        /// Load the ship's content
+        /// </summary>
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
             switch (this.Size)
@@ -42,23 +54,52 @@ namespace Asteroids_Xbox.Entities
                     Animation.Initialize(enemyTexture, Vector2.Zero, 75, 30, 8, 45, BackgroundColor, 1f, true);
                     break;
             }
+
             WrapScreen = true;
             MaxSpeed = 5.0f;
             MoveSpeed = 5.0f;
         }
 
+
+        /// <summary>
+        /// Update the ship on the game loop
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
+            this.gameTime = gameTime;
             Rotate(2.0f);
             Move(speed.X, speed.Y);
             base.Update(inputManager, gameTime);
         }
 
+        /// <summary>
+        /// Kill the ship
+        /// </summary>
+        public void Kill()
+        {
+            entityManager.Remove(this);
+            if (Size == Sizes.Small)
+            {
+                player.Score += 1000;
+            }
+            else
+            {
+                player.Score += 200;
+            }
+
+            // TODO: Explosion
+        }
+
+        /// <summary>
+        /// Fire a bullet from the ship
+        /// </summary>
+        /// <param name="speed"></param>
+        /// <returns></returns>
         private Bullet FireBullet(Vector2 speed)
         {
-            // If someone is playing around midnight, they get a lucky shot that
-            // has no delay
-            var totalSeconds = DateTime.Now.TimeOfDay.TotalSeconds;
+            var totalSeconds = gameTime.TotalGameTime.TotalSeconds;
             var timeSinceLast = totalSeconds - previousSeconds;
             if (timeSinceLast > bulletFireTime)
             {

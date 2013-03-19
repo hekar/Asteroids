@@ -8,19 +8,54 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Player contains the player ship, handles the controls, score, lives, etc.
+    /// </summary>
     class Player : AnimatedEntity
     {
+        /// <summary>
+        /// Texture for the ship
+        /// </summary>
         private const string PlayerTextureName = "shipAnimation";
+
+        /// <summary>
+        /// Texture for the explosion
+        /// </summary>
         private const string PlayerExplosionTextureName = "Ship_Explode";
 
+        /// <summary>
+        /// Time between bullet fires
+        /// </summary>
         private const double bulletFireTime = 0.5;
+
+        /// <summary>
+        /// Protection time on respawn
+        /// </summary>
         private const double protectionTime = 1.0;
+
+        /// <summary>
+        /// Time between hyperspaces
+        /// </summary>
         private const double hyperspaceTime = 2.0;
 
+        /// <summary>
+        /// Background color
+        /// </summary>
         private readonly Color BackgroundColor = Color.White;
 
+        /// <summary>
+        /// Entity manager
+        /// </summary>
         private readonly EntityManager entityManager;
+
+        /// <summary>
+        /// Content manager
+        /// </summary>
         private ContentManager content;
+
+        /// <summary>
+        /// Current gametime
+        /// </summary>
         private GameTime gameTime;
 
         /// <summary>
@@ -149,6 +184,8 @@ namespace Asteroids_Xbox.Entities
                 CurrentSpeed = new Vector2(CurrentSpeed.X / 1.05f, CurrentSpeed.Y / 1.05f);
             }
 
+            base.Update(inputManager, gameTime);
+
             // Hyperspace
             if (inputManager.WasKeyPressed(Keys.H) ||
                 inputManager.WasButtonPressed(Buttons.B) &&
@@ -162,8 +199,7 @@ namespace Asteroids_Xbox.Entities
                 lastHyperspaceTime = gameTime.TotalGameTime.TotalSeconds;
             }
 
-            base.Update(inputManager, gameTime);
-
+            // Fire bullet
             if (keyboard.IsKeyDown(Keys.Space) ||
                 gamepad.Buttons.A == ButtonState.Pressed)
             {
