@@ -27,10 +27,21 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class Titlescreen : AnimatedEntity
     {
+        /// <summary>
+        /// Player
+        /// </summary>
         public Player Player { get; set; }
+
+        /// <summary>
+        /// Titlescreen status
+        /// </summary>
         public TitlescreenStatus TitlescreenStatus { get; set; }
 
         private bool visible;
+
+        /// <summary>
+        /// Is the titlescreen currently visible
+        /// </summary>
         public bool Visible
         {
             get { return visible; }
@@ -170,21 +181,21 @@ namespace Asteroids_Xbox.Entities
             switch (TitlescreenStatus)
             {
                 case TitlescreenStatus.Start:
-                    WriteTitleMessage(spriteBatch, "Captain Asteroids");
-                    WriteSubMessage(spriteBatch);
+                    WriteTitle(spriteBatch, "Captain Asteroids");
+                    WriteSubTitle(spriteBatch, "Press Enter (A) to Start");
                     break;
                 case TitlescreenStatus.GameOver:
-                    WriteTitleMessage(spriteBatch, "Game Over!");
+                    WriteTitle(spriteBatch, "Game Over!");
                     break;
                 case TitlescreenStatus.Help:
-                    WriteHelpMessage(spriteBatch);
+                    WriteHelp(spriteBatch);
                     break;
                 default:
                     break;
             }
         }
 
-        private void WriteHelpMessage(SpriteBatch spriteBatch)
+        private void WriteHelp(SpriteBatch spriteBatch)
         {
             var text = "Help";
             var offset = font.MeasureString(text);
@@ -222,7 +233,7 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        private void WriteTitleMessage(SpriteBatch spriteBatch, string text)
+        private void WriteTitle(SpriteBatch spriteBatch, string text)
         {
             var offset = font.MeasureString(text);
             var pos = new Vector2
@@ -234,10 +245,8 @@ namespace Asteroids_Xbox.Entities
             spriteBatch.DrawString(font, text, pos, Color.Green);
         }
 
-        private void WriteSubMessage(SpriteBatch spriteBatch)
+        private void WriteSubTitle(SpriteBatch spriteBatch, string text)
         {
-            var text = "Press Enter (A) to Start";
-
             var offset = font.MeasureString(text);
             var pos = new Vector2
             (
