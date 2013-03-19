@@ -36,7 +36,7 @@ namespace Asteroids_Xbox.Manager
         /// Number of large asteroids that can be in the game at a given time
         /// </summary>
         private int asteroidSpawnLimit = DefaultAsteroidCount;
-
+        int shitCount = 0;
         public AsteroidManager(EntityManager entityManager)
         {
             this.entityManager = entityManager;
@@ -99,6 +99,13 @@ namespace Asteroids_Xbox.Manager
             var spawnTimeReached = (gameTime.TotalGameTime - previousSpawnTime) > asteroidSpawnTime;
             var spawnLimitReached = freshAsteroids.Count >= asteroidSpawnLimit;
 
+            if (shitCount < 1)
+            {
+                var enemy = CreateEnemy(player.Position, content, graphicsDevice);
+                entityManager.Add(enemy);
+                shitCount++;
+            }
+
             var spawnNewAsteroid = spawnTimeReached && !spawnLimitReached;
             if (spawnNewAsteroid)
             {
@@ -137,7 +144,7 @@ namespace Asteroids_Xbox.Manager
                         a2.Position = asteroid.Position;
                         splitAsteroids.AddRange(new Asteroid[] { a1, a2 });
                     }
-   
+
                     Remove(asteroid);
 
                     foreach (var newAsteroid in splitAsteroids)
@@ -175,6 +182,14 @@ namespace Asteroids_Xbox.Manager
             explosion.Position = new Vector2(position.X, position.Y);
 
             return explosion;
+        }
+
+        ///This does not belong here...
+        public EnemyShip CreateEnemy(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
+        {
+            var enemy = new EnemyShip(entityManager, position, new Vector2(1.0f, 1.0f), Sizes.Large);
+            enemy.Initialize(content, graphicsDevice);
+            return enemy;
         }
     }
 }
