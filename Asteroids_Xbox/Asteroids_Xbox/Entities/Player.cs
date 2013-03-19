@@ -1,10 +1,10 @@
+using System;
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -14,24 +14,28 @@ namespace Asteroids_Xbox.Entities
         private const string PlayerExplosionTextureName = "Ship_Explode";
 
         private const double bulletFireTime = 0.5;
-        private const double protectionTime = 1.0f;
+        private const double protectionTime = 1.0;
+        private const double hyperspaceTime = 2.0;
 
         private readonly Color BackgroundColor = Color.White;
 
         private readonly EntityManager entityManager;
+        private ContentManager content;
         private GameTime gameTime;
 
+        /// <summary>
+        /// Number of lives that the player has
+        /// </summary>
         public int Lives { get; set; }
+
+        /// <summary>
+        /// Player score
+        /// </summary>
         public int Score { get; set; }
 
-        public bool Won
-        {
-            get
-            {
-                return Score > 10000;
-            }
-        }
-
+        /// <summary>
+        /// Is the player still alive?
+        /// </summary>
         public bool Alive
         {
             get
@@ -40,6 +44,9 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
+        /// <summary>
+        /// Is the player under spawn protection?
+        /// </summary>
         public bool UnderProtection
         {
             get
@@ -48,15 +55,30 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        private double previousSeconds;
+        /// <summary>
+        /// The number of gametime seconds that the bullet was last fired
+        /// </summary>
+        private double lastBulletFireTime;
+
+        /// <summary>
+        /// The last time the player was respawned
+        /// </summary>
         private double lastRespawnTime;
-        private ContentManager content;
+
+        /// <summary>
+        /// The last time that hyperspace was activated
+        /// </summary>
+        private double lastHyperspaceTime;
 
         public Player(EntityManager entityManager)
         {
             this.entityManager = entityManager;
         }
 
+        /// <summary>
+        /// Load content
+        /// </summary>
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
             this.content = content;
@@ -71,23 +93,20 @@ namespace Asteroids_Xbox.Entities
             CurrentSpeed = Vector2.Zero;
             WrapScreen = true;
 
-            Respawn(false);
+            Respawn();
         }
 
-        private void Respawn(bool died)
+        /// <summary>
+        /// Respawn the player. If the player died, then an explosion will be shown
+        /// </summary>
+        /// <param name="died"></param>
+        private void Respawn()
         {
             if (gameTime != null)
             {
                 lastRespawnTime = gameTime.TotalGameTime.TotalSeconds; 
             }
             
-            if (died)
-            {
-                var explosion = CreateExplosion(Position, content, GraphicsDevice);
-                entityManager.Add(explosion);
-                explosion.PlayExplosionSound();
-            }
-
             Position = new Vector2
             (
                 GraphicsDevice.Viewport.TitleSafeArea.X + GraphicsDevice.Viewport.TitleSafeArea.Width / 2,
@@ -95,6 +114,11 @@ namespace Asteroids_Xbox.Entities
             );
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             this.gameTime = gameTime;
@@ -125,6 +149,19 @@ namespace Asteroids_Xbox.Entities
                 CurrentSpeed = new Vector2(CurrentSpeed.X / 1.05f, CurrentSpeed.Y / 1.05f);
             }
 
+            // Hyperspace
+            if (inputManager.WasKeyPressed(Keys.H) ||
+                inputManager.WasButtonPressed(Buttons.B) &&
+                (gameTime.TotalGameTime.TotalSeconds - lastHyperspaceTime) > hyperspaceTime)
+            {
+                var random = new Random();
+                float x = random.Next(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Width);
+                float y = random.Next(GraphicsDevice.Viewport.Y, GraphicsDevice.Viewport.Height);
+                Position = new Vector2(x, y);
+
+                lastHyperspaceTime = gameTime.TotalGameTime.TotalSeconds;
+            }
+
             base.Update(inputManager, gameTime);
 
             if (keyboard.IsKeyDown(Keys.Space) ||
@@ -134,19 +171,22 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
+        /// <summary>
+        /// Fire a bullet in the player's direction
+        /// </summary>
+        /// <param name="speed"></param>
+        /// <returns></returns>
         private Bullet FireBullet(Vector2 speed)
         {
-            // If someone is playing around midnight, they get a lucky shot that
-            // has no delay
-            var totalSeconds = DateTime.Now.TimeOfDay.TotalSeconds;
-            var timeSinceLast = totalSeconds - previousSeconds;
+            var totalSeconds = gameTime.TotalGameTime.TotalSeconds;
+            var timeSinceLast = totalSeconds - lastBulletFireTime;
             if (timeSinceLast > bulletFireTime)
             {
                 Vector2 bulletPosition = new Vector2(Position.X + (Width / 2), Position.Y + (Height / 2));
                 var bullet = new Bullet(entityManager, bulletPosition, speed, Rotation);
                 entityManager.Add(bullet);
                 bullet.laserSound.Play();
-                previousSeconds = totalSeconds;
+                lastBulletFireTime = totalSeconds;
                 return bullet;
             }
             else
@@ -155,30 +195,30 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        public override void Touch(AnimatedEntity other)
-        {
-            if (!UnderProtection && other is Asteroid)
-            {
-                Kill();
-            }
-
-            base.Touch(other);
-        }
-
+        /// <summary>
+        /// Kill the player
+        /// </summary>
         public void Kill()
         {
             Lives -= 1;
-            if (!Alive)
+            if (Lives > 0)
             {
-                // Game over...
-            }
-            else
-            {
-                Respawn(true);
+                var explosion = CreateExplosion(Position, content, GraphicsDevice);
+                entityManager.Add(explosion);
+                explosion.PlayExplosionSound();
+
+                Respawn();
             }
         }
 
-        public Explosion CreateExplosion(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
+        /// <summary>
+        /// Create the player explosion
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="content"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <returns></returns>
+        private Explosion CreateExplosion(Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
         {
             var explosion = new Explosion(entityManager, PlayerExplosionTextureName);
             explosion.Initialize(content, graphicsDevice);

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
@@ -5,10 +6,20 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System.Collections.Generic;
 
 namespace Asteroids_Xbox.Entities
 {
+    /// <summary>
+    /// Current status of the title screen
+    /// </summary>
+    enum TitlescreenStatus
+    {
+        Start,
+        GameOver,
+        Help,
+        Pause
+    }
+
     /// <summary>
     /// Display and process the titlescreen
     /// 
@@ -16,8 +27,9 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class Titlescreen : AnimatedEntity
     {
-        private bool visible;
+        public Player Player { get; set; }
 
+        private bool visible;
         public bool Visible
         {
             get { return visible; }
@@ -35,17 +47,32 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        private SpriteFont font;
-        enum GameStatus { start, gameOver, help, pause };
-        private GameStatus gameStatus;
+        /// <summary>
+        /// This property is a hack. Basically is a new game being requested by the titlescreen
+        /// </summary>
+        public bool NewGameRequested { get; set; }
+
+        /// <summary>
+        /// Is the titlescreen asking for an exit
+        /// </summary>
         public bool ExitRequested { get; private set; }
+
+        private SpriteFont font;
+        private TitlescreenStatus gameStatus;
         private Song menuSong;
         private Song gameSong;
         private bool isGamepad;
+
+        public Titlescreen(Player player)
+        {
+            this.Player = player;
+        }
+
         public override void Load(ContentManager content)
         {
+            NewGameRequested = false;
             ExitRequested = false;
-            gameStatus = GameStatus.start;
+            gameStatus = TitlescreenStatus.Start;
             font = content.Load<SpriteFont>("gameFont");
 
             menuSong = content.Load<Song>("sound/menuMusic");
@@ -76,7 +103,10 @@ namespace Asteroids_Xbox.Entities
                 // Loop the currently playing song
                 MediaPlayer.IsRepeating = true;
             }
-            catch { }
+            catch 
+            {
+                // Ignore...
+            }
         }
 
         public override void Update(InputManager inputManager, GameTime gameTime)
@@ -92,34 +122,43 @@ namespace Asteroids_Xbox.Entities
                 {
                     isGamepad = true;
                 }
-                gameStatus = GameStatus.help;
+                gameStatus = TitlescreenStatus.Help;
             }
             else if (keyboard.IsKeyDown(Keys.Space) ||
                 keyboard.IsKeyDown(Keys.Enter) ||
                 gamepad.Buttons.A == ButtonState.Pressed)
             {
-                // Start game
-                Visible = false;
+                if (Player.Alive)
+                {
+                    // Resume game
+                    Visible = false;
+                }
+                else
+                {
+                    // Start new game
+                    Visible = false;
+                    NewGameRequested = true;
+                }
             }
 
-            var escPressed = inputManager.WasKeyPressed(Keys.Escape) ||
-                    inputManager.WasButtonPressed(Buttons.Back);
-            if (escPressed)
+            if (inputManager.WasKeyPressed(Keys.Escape) ||
+                    inputManager.WasButtonPressed(Buttons.Back))
             {
                 switch (gameStatus)
                 {
-                    case GameStatus.start:
+                    case TitlescreenStatus.Start:
                         ExitRequested = true;
                         break;
-                    case GameStatus.gameOver:
-                        break;
-                    case GameStatus.help:
-                        gameStatus = GameStatus.start;
+
+                    case TitlescreenStatus.GameOver:
+                    case TitlescreenStatus.Help:
+                        gameStatus = TitlescreenStatus.Start;
                         break;
                     default:
                         break;
                 }
             }
+
             base.Update(inputManager, gameTime);
         }
 
@@ -129,13 +168,14 @@ namespace Asteroids_Xbox.Entities
 
             switch (gameStatus)
             {
-                case GameStatus.start:
-                    WriteTitleMessage(spriteBatch);
+                case TitlescreenStatus.Start:
+                    WriteTitleMessage(spriteBatch, "Captain Asteroids");
                     WriteSubMessage(spriteBatch);
                     break;
-                case GameStatus.gameOver:
+                case TitlescreenStatus.GameOver:
+                    WriteTitleMessage(spriteBatch, "Game Over!");
                     break;
-                case GameStatus.help:
+                case TitlescreenStatus.Help:
                     WriteHelpMessage(spriteBatch);
                     break;
                 default:
@@ -167,6 +207,7 @@ namespace Asteroids_Xbox.Entities
                 text = "Use Arrows to move";
                 texts.Add(text);
             }
+
             int i = 1;
             foreach (var line in texts)
             {
@@ -180,10 +221,8 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
-        private void WriteTitleMessage(SpriteBatch spriteBatch)
+        private void WriteTitleMessage(SpriteBatch spriteBatch, string text)
         {
-            var text = "Captain Asteroids";
-
             var offset = font.MeasureString(text);
             var pos = new Vector2
             (

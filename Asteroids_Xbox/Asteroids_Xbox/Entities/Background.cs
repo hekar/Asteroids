@@ -1,5 +1,4 @@
 using System;
-using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

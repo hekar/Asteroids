@@ -1,9 +1,8 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Asteroids_Xbox.Types;
-using Microsoft.Xna.Framework.Content;
 using Asteroids_Xbox.Manager;
+using Asteroids_Xbox.Types;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -91,6 +90,17 @@ namespace Asteroids_Xbox.Entities
         {
             Rotate(RotationSpeed);
             base.Update(inputManager, gameTime);
+        }
+
+        public override void Touch(AnimatedEntity other)
+        {
+            if (other is Player)
+            {
+                var player = other as Player;
+                player.Kill();
+            }
+
+            base.Touch(other);
         }
     }
 }

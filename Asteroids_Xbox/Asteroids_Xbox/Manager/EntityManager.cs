@@ -66,6 +66,15 @@ namespace Asteroids_Xbox.Manager
         }
 
         /// <summary>
+        /// Remove all entities from the entity manager
+        /// </summary>
+        public void Clear()
+        {
+            entities.Clear();
+            animatedEntities.Clear();
+        }
+
+        /// <summary>
         /// Intialize all entities
         /// </summary>
         /// <param name="content"></param>
@@ -120,7 +129,7 @@ namespace Asteroids_Xbox.Manager
                 foreach (var other in copy)
                 {
                     if (entity is Bullet && other is Asteroid ||
-                        entity is Player && other is Asteroid ||
+                        entity is Asteroid && other is Player ||
                         entity is EnemyBullet && other is Asteroid ||
                         entity is EnemyBullet && other is Player)
                     {

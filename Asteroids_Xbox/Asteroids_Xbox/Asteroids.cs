@@ -47,17 +47,7 @@ namespace Asteroids_Xbox
         /// </summary>
         protected override void Initialize()
         {
-            entityManager = new EntityManager(Content, GraphicsDevice);
-            inputManager = new InputManager();
-            asteroidManager = new AsteroidManager(entityManager);
-
-            titleScreen = new Titlescreen();
-
-            player = new Player(entityManager);
-
-            entityManager.Add(new Background());
-            entityManager.Add(player);
-            entityManager.Add(new ScoreDisplay(new List<Player>(new Player[] {player})));
+            NewGame();
 
             base.Initialize();
         }
@@ -99,7 +89,13 @@ namespace Asteroids_Xbox
             if (titleScreen.Visible)
             {
                 titleScreen.Update(inputManager, gameTime);
-                if (titleScreen.ExitRequested)
+                if (titleScreen.NewGameRequested)
+                {
+                    NewGame();
+                    titleScreen.NewGameRequested = false;
+                    return;
+                }
+                else if (titleScreen.ExitRequested)
                 {
                     this.Exit();
                 }
@@ -114,18 +110,15 @@ namespace Asteroids_Xbox
                     //pause screen
                     titleScreen.Visible = true;
                 }
-
-                if (!player.Alive)
+                else if (!player.Alive)
                 {
-                    // TODO: Game over
+                    titleScreen.Visible = true;
                 }
-                else if (player.Won)
+                else
                 {
-                    // TODO: You win!!
+                    asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
+                    entityManager.Update(inputManager, gameTime);
                 }
-
-                asteroidManager.Update(Content, GraphicsDevice, player, gameTime);
-                entityManager.Update(inputManager, gameTime);
             }
             
             base.Update(gameTime);
@@ -152,5 +145,50 @@ namespace Asteroids_Xbox
 
             base.Draw(gameTime);
         }
+
+        /// <summary>
+        /// Initialize the new game
+        /// </summary>
+        private void NewGame()
+        {
+            if (entityManager == null)
+            {
+                entityManager = new EntityManager(Content, GraphicsDevice);
+            }
+            else
+            {
+                entityManager.Clear();
+            }
+
+            if (inputManager == null)
+            {
+                inputManager = new InputManager();
+            }
+
+            if (asteroidManager == null)
+            {
+                asteroidManager = new AsteroidManager(entityManager);
+            }
+            else
+            {
+                asteroidManager.Clear();
+            }
+
+            player = new Player(entityManager);
+
+            if (titleScreen == null)
+            {
+                titleScreen = new Titlescreen(player);
+            }
+            else
+            {
+                titleScreen.Player = player;
+            }
+
+            entityManager.Add(new Background());
+            entityManager.Add(player);
+            entityManager.Add(new ScoreDisplay(new List<Player>(new Player[] { player })));
+        }
+
     }
 }

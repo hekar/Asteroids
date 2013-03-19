@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Asteroids_Xbox.Types;
-using Microsoft.Xna.Framework.Content;
 using Asteroids_Xbox.Manager;
+using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Asteroids_Xbox.Entities

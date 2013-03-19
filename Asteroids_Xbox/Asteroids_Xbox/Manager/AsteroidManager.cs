@@ -94,6 +94,13 @@ namespace Asteroids_Xbox.Manager
             entityManager.Remove(asteroid);
         }
 
+        public void Clear()
+        {
+            asteroids.Clear();
+            freshAsteroids.Clear();
+            entityManager.Clear();
+        }
+
         public void Update(ContentManager content, GraphicsDevice graphicsDevice, Player player, GameTime gameTime)
         {
             var spawnTimeReached = (gameTime.TotalGameTime - previousSpawnTime) > asteroidSpawnTime;
@@ -159,7 +166,7 @@ namespace Asteroids_Xbox.Manager
             asteroidSpawnLimit = (int)Math.Floor((double)player.Score / 1000) + DefaultAsteroidCount;
         }
 
-        public Explosion CreateExplosion(Sizes size, Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
+        private Explosion CreateExplosion(Sizes size, Vector2 position, ContentManager content, GraphicsDevice graphicsDevice)
         {
             Func<Sizes, String> fun = (explosionSize) =>
             {
