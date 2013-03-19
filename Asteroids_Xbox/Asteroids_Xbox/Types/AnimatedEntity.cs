@@ -211,6 +211,7 @@ namespace Asteroids_Xbox.Types
                 // TODO: later after i eat these muffins
                 // and have some ice cream and watch
                 // 50 HOURS OF KDRAMAS OMG, NEW SERIES FOUND GOMG AOSDMF ASDFJKSADJG ASDFOSDMAGOMSDAFKLASDHJFLKASDFKLHASDFAJLSDFHASJKDFHASJDKFHASDKLFHASKJDFHASJKDHKJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJF
+
                 // Perform pixel check now
                 //var area = (this.Bounds.Width * this.Bounds.Height);
                 //var otherArea = (other.Bounds.Width * other.Bounds.Height);
@@ -228,6 +229,7 @@ namespace Asteroids_Xbox.Types
 
         /// <summary>
         /// TODO: Implement this
+        /// Reference: http://stackoverflow.com/questions/14024248/implementing-per-pixel-collision-on-rotated-sprites
         /// </summary>
         /// <param name="e1"></param>
         /// <param name="e2"></param>

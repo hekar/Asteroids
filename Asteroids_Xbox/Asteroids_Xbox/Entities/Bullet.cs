@@ -10,10 +10,11 @@ namespace Asteroids_Xbox.Entities
     class Bullet : AnimatedEntity
     {
         private const string TextureName = "bullet";
-
-        private Vector2 speed;
         private readonly Color BackgroundColor = Color.GhostWhite;
         private readonly EntityManager entityManager;
+
+        private Vector2 speed;
+        private Vector2 origin;
         public SoundEffect laserSound;
 
         public Bullet(EntityManager entityManager,
@@ -23,6 +24,7 @@ namespace Asteroids_Xbox.Entities
             this.speed = speed;
             this.Rotation = rotation;
 
+            this.origin = position;
             Position = position;
         }
 
@@ -40,6 +42,24 @@ namespace Asteroids_Xbox.Entities
 
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
+            if (WrapScreenCount > 0)
+            {
+                if (CurrentSpeed.Y < 0.0f)
+                {
+                    if (Position.Y < origin.Y)
+                    {
+                        Kill();
+                    }
+                }
+                else
+                {
+                    if (Position.Y > origin.Y)
+                    {
+                        Kill();
+                    }
+                }
+            }
+
             Forward(speed.X, speed.Y);
             base.Update(inputManager, gameTime);
         }
@@ -50,10 +70,15 @@ namespace Asteroids_Xbox.Entities
             {
                 var asteroid = other as Asteroid;
                 asteroid.Health = 0;
-                entityManager.Remove(this);
+                Kill();
             }
 
             base.Touch(other);
+        }
+
+        private void Kill()
+        {
+            entityManager.Remove(this);
         }
     }
 }
