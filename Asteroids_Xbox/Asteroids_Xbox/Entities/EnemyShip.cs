@@ -98,7 +98,7 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         public void Kill(Entity killer)
         {
-            var enemyBullet = (killer is EnemyBullet) || (killer is EnemyShip);
+            var enemyBullet = (killer is EnemyBullet);
             if (!enemyBullet)
             {
                 entityManager.Remove(this);
@@ -129,7 +129,7 @@ namespace Asteroids_Xbox.Entities
             if (timeSinceLast > bulletFireTime)
             {
                 Vector2 bulletPosition = new Vector2(Position.X - (Width / 2), Position.Y - (Height / 2));
-                var bullet = new EnemyBullet(entityManager, bulletPosition, speed, Rotation);
+                var bullet = new EnemyBullet(entityManager, this, bulletPosition, speed, Rotation);
                 entityManager.Add(bullet);
                 bullet.laserSound.Play();
                 previousSeconds = totalSeconds;

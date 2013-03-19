@@ -164,7 +164,8 @@ namespace Asteroids_Xbox.Manager
             var spawnTimeReached = (gameTime.TotalGameTime - lastAsteroidSpawnTime) > asteroidSpawnTime;
             var spawnLimitReached = freshAsteroids.Count >= asteroidSpawnLimit;
 
-            if ((gameTime.TotalGameTime.TotalSeconds - lastShipSpawnTime) > shipSpawnTime)
+            if ((gameTime.TotalGameTime.TotalSeconds - lastShipSpawnTime) > shipSpawnTime 
+                && shipCount <= 0)
             {
                 CreateEnemyShip(content, graphicsDevice);
                 lastShipSpawnTime = gameTime.TotalGameTime.TotalSeconds;

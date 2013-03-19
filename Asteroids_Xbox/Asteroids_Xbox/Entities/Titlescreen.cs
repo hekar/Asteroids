@@ -190,6 +190,11 @@ namespace Asteroids_Xbox.Entities
                 case TitlescreenStatus.Help:
                     WriteHelp(spriteBatch);
                     break;
+                case Entities.TitlescreenStatus.Pause:
+                    WriteTitle(spriteBatch, "Game Paused");
+                    WriteSubTitle(spriteBatch, "Game - Enter (A)");
+                    WriteSubSubTitle(spriteBatch, "Menu - Escape (Back)");
+                    break;
                 default:
                     break;
             }
@@ -197,38 +202,48 @@ namespace Asteroids_Xbox.Entities
 
         private void WriteHelp(SpriteBatch spriteBatch)
         {
-            var text = "Help";
-            var offset = font.MeasureString(text);
-            var pos = new Vector2
-            (
-                GraphicsDevice.Viewport.Width / 2, 0
-            );
-            spriteBatch.DrawString(font, text, pos, Color.Green);
             List<string> texts = new List<string>();
             if (isGamepad)
             {
-                text = "Press A to shoot";
-                texts.Add(text);
-                text = "Use D-Pad to move";
-                texts.Add(text);
+                texts.AddRange(new string[] 
+                {
+                    "Help",
+                    "Use 'D-Pad' to move",
+                    "Press 'A' to shoot",
+                    "Press 'B' to hyperspace",
+                    "",
+                    "Professor: Norbert Mika",
+                    "Course: SET Simulation and Game Development 2013",
+                    "Students: Steve Davis and Hekar Khani",
+                    "Press (Back) to go back"
+                });
             }
             else
             {
-                text = "Press Spacebar to shoot";
-                texts.Add(text);
-                text = "Use Arrows to move";
-                texts.Add(text);
+                texts.AddRange(new string[] 
+                {
+                    "Help",
+                    "Use 'Arrows' to move",
+                    "Press 'H' to hyperspace",
+                    "Press 'Spacebar' to shoot",
+                    "",
+                    "Professor: Norbert Mika",
+                    "Course: SET Simulation and Game Development 2013",
+                    "Students: Steve Davis and Hekar Khani",
+                    "Press Escape to go back"
+                });
             }
 
             int i = 1;
             foreach (var line in texts)
             {
-                offset = font.MeasureString(line);
-                pos = new Vector2
+                var offset = font.MeasureString(line);
+                var pos = new Vector2
                 (
-                    GraphicsDevice.Viewport.X + GraphicsDevice.Viewport.Width / 4, (offset.Y * i)
+                    GraphicsDevice.Viewport.X + 50, 
+                    (offset.Y * i)
                 );
-                spriteBatch.DrawString(font, text, pos, Color.Green);
+                spriteBatch.DrawString(font, line, pos, Color.Green);
                 i++;
             }
         }
