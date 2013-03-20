@@ -1,3 +1,10 @@
+///
+///FILE          : inputmanager.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the input manager. Handles user input.
+///
 using Microsoft.Xna.Framework.Input;
 
 namespace Asteroids_Xbox.Manager

@@ -1,3 +1,10 @@
+///
+///FILE          : entitymanager.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the entity manager. It handles the games entities.
+///
 using System.Collections.Generic;
 using System.Linq;
 using Asteroids_Xbox.Entities;
@@ -13,19 +20,28 @@ namespace Asteroids_Xbox.Manager
     /// </summary>
     class EntityManager
     {
+        /// <summary>
+        /// The content manager
+        /// </summary>
         private readonly ContentManager contentManager;
+        /// <summary>
+        /// The graphics device
+        /// </summary>
         private readonly GraphicsDevice graphicsDevice;
-
         /// <summary>
         /// All the entities that are currently in the game
         /// </summary>
         private readonly List<Entity> entities = new List<Entity>();
-
         /// <summary>
         /// All the animated entities that are currently in the game
         /// </summary>
         private readonly List<AnimatedEntity> animatedEntities = new List<AnimatedEntity>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityManager"/> class.
+        /// </summary>
+        /// <param name="contentManager">The content manager.</param>
+        /// <param name="graphicsDevice">The graphics device.</param>
         public EntityManager(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             this.contentManager = contentManager;
@@ -94,8 +110,8 @@ namespace Asteroids_Xbox.Manager
         /// <param name="gameTime"></param>
         public void Update(InputManager inputManager, GameTime gameTime)
         {
-            // We need a copy, because the list may change while iterating
-            // over the entities
+            /// We need a copy, because the list may change while iterating
+            /// over the entities
             var copy = entities.ToList();
             foreach (var entity in copy)
             {
@@ -144,6 +160,10 @@ namespace Asteroids_Xbox.Manager
             }
         }
 
+        /// <summary>
+        /// Returns the entities.
+        /// </summary>
+        /// <returns></returns>
         public List<Entity> List()
         {
             return entities;

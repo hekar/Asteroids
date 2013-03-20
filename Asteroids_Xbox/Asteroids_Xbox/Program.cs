@@ -1,3 +1,10 @@
+///
+///FILE          : Program.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : Application entry.
+///
 using System;
 
 namespace Asteroids_Xbox

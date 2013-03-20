@@ -1,17 +1,17 @@
-using System;
+///
+///FILE          : Asteroids.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is basically the main game.
+///                 It initilizes everything and starts the game loop.
+///
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
-using Asteroids_Xbox.Types;
 using Asteroids_Xbox.Entities;
 using Asteroids_Xbox.Manager;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Asteroids_Xbox
 {
@@ -23,15 +23,15 @@ namespace Asteroids_Xbox
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        // Managers
+        /// Managers
         private GameManager asteroidManager;
         private InputManager inputManager;
         private EntityManager entityManager;
 
-        // Screens
+        /// Screens
         private Titlescreen titleScreen;
 
-        // Entities
+        /// Entities
 
         private Player player;
 
@@ -80,12 +80,12 @@ namespace Asteroids_Xbox
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            /// Gets the keyboard state and manages.
             inputManager.PreviousKeyboardState = inputManager.CurrentKeyboardState;
             inputManager.CurrentKeyboardState = Keyboard.GetState();
 
             inputManager.PreviousGamePadState = inputManager.CurrentGamePadState;
             inputManager.CurrentGamePadState = GamePad.GetState(PlayerIndex.One);
-
             if (titleScreen.Visible)
             {
                 titleScreen.Update(inputManager, gameTime);
@@ -104,16 +104,16 @@ namespace Asteroids_Xbox
             {
                 var exitPressed = inputManager.WasKeyPressed(Keys.Escape) ||
                     inputManager.WasButtonPressed(Buttons.Back);
-                // Hack: Show titlescreen/Pause game
+                /// Show titlescreen/Pause game
                 if (exitPressed)
                 {
-                    // Game is paused
+                    /// Game is paused
                     titleScreen.TitlescreenStatus = TitlescreenStatus.Pause;
                     titleScreen.Visible = true;
                 }
                 else if (!player.Alive)
                 {
-                    // Gameover
+                    /// Gameover
                     titleScreen.TitlescreenStatus = TitlescreenStatus.GameOver;
                     titleScreen.Visible = true;
                 }
@@ -123,7 +123,6 @@ namespace Asteroids_Xbox
                     entityManager.Update(inputManager, gameTime);
                 }
             }
-            
             base.Update(gameTime);
         }
         
@@ -134,7 +133,6 @@ namespace Asteroids_Xbox
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
             spriteBatch.Begin();
             if (titleScreen.Visible)
             {
@@ -150,12 +148,14 @@ namespace Asteroids_Xbox
         }
 
         /// <summary>
-        /// Initialize the new game
+        /// Initialize the new game. Creates any entities that need to be created
+        /// in order to run the game.
         /// </summary>
         private void NewGame()
         {
             if (entityManager == null)
             {
+                /// Create a new entity manager.
                 entityManager = new EntityManager(Content, GraphicsDevice);
             }
             else
@@ -167,9 +167,8 @@ namespace Asteroids_Xbox
             {
                 inputManager = new InputManager();
             }
-
+            /// Create a new player.
             player = new Player(entityManager);
-
             if (asteroidManager == null)
             {
                 asteroidManager = new GameManager(entityManager, player);
@@ -178,17 +177,15 @@ namespace Asteroids_Xbox
             {
                 asteroidManager.Clear();
             }
-
-
             if (titleScreen == null)
             {
+                /// Create a new title screen
                 titleScreen = new Titlescreen(player);
             }
             else
             {
                 titleScreen.Player = player;
             }
-
             entityManager.Add(new Background());
             entityManager.Add(player);
             entityManager.Add(new ScoreDisplay(new List<Player>(new Player[] { player })));

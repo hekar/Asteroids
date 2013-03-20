@@ -1,3 +1,11 @@
+///
+///FILE          : background.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the class that makes up the backgrounds on the screen.
+///                 There are two possible backgrounds, one is chosen at random.
+///
 using System;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
@@ -12,35 +20,28 @@ namespace Asteroids_Xbox.Entities
     class Background : AnimatedEntity
     {
         /// <summary>
-        /// Background textures
+        /// Load the background content
         /// </summary>
-        private readonly string[] BackgroundContentNames = new string[]
-        {
-            "space1"
-        };
-
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
+            Texture2D texture;
             var rand = new Random();
-            var backgroundName = BackgroundContentNames[rand.Next(0, BackgroundContentNames.Length)];
-            Texture2D texture = content.Load<Texture2D>("space1");
+            var bg = rand.Next(0, 10);
+            if(bg < 5)
+                texture = content.Load<Texture2D>("space1");
+            else
+                texture = content.Load<Texture2D>("space2");
+            
 
             Animation.Initialize(texture, Vector2.Zero, texture.Width, texture.Height, 1, 30, Color.White, 1f, true);
-            //Animation.Initialize(texture, Vector2.Zero, 75, 30, 8, 30, Color.White, 1f, true);
-
-            MoveSpeed = 8.0f;
-            MaxSpeed = 10.0f;
-            RotationSpeed = 5.0f;
-            CurrentSpeed = Vector2.Zero;
             WrapScreen = true;
-
-            Position = new Vector2
-            (
-                GraphicsDevice.Viewport.TitleSafeArea.X,
-                GraphicsDevice.Viewport.TitleSafeArea.Y
-            );
         }
 
+        /// <summary>
+        /// Draw the animation to the screen
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);

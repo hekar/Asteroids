@@ -1,3 +1,10 @@
+///
+///FILE          : asteroid.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the class that makes up the asteroids that appear.
+///
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
@@ -7,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Asteroids_Xbox.Entities
 {
     /// <summary>
-    /// Asteroid floating in space
+    /// This is the asteroid class.
     /// </summary>
     class Asteroid : AnimatedEntity
     {
@@ -62,11 +69,24 @@ namespace Asteroids_Xbox.Entities
         /// </summary>
         private Texture2D asteroidTexture;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Asteroid"/> class.
+        /// This defaults to creating a large asteroid and uses default constructor values.
+        /// </summary>
+        /// <param name="asteroidManager">The asteroid manager.</param>
+        /// <param name="player">The player.</param>
         public Asteroid(GameManager asteroidManager, Player player)
             : this(asteroidManager, player, Sizes.Large)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Asteroid"/> class.
+        /// This is the class where we can pass in values to create an asteroid.
+        /// </summary>
+        /// <param name="asteroidManager">The asteroid manager.</param>
+        /// <param name="player">The player.</param>
+        /// <param name="newSize">The new size.</param>
         public Asteroid(GameManager asteroidManager, Player player, Sizes newSize)
         {
             this.asteroidManager = asteroidManager;
@@ -80,6 +100,7 @@ namespace Asteroids_Xbox.Entities
         /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
+            /// Determine what size the asteroid is and load the appropriate texture.
             switch (this.Size)
             {
                 case Sizes.Small:
@@ -96,12 +117,15 @@ namespace Asteroids_Xbox.Entities
                     break;
             }
 
+            /// Initilize the asteroid
             Animation.Initialize(asteroidTexture, Vector2.Zero,
                 asteroidTexture.Width, asteroidTexture.Height, 1, 30, Color.White, 1f, true);
 
+            /// Set some values for the asteroids.
             Health = 50;
             Damage = 100;
 
+            /// Determine how many points asteroids are worth
             if (Size == Sizes.Large)
             {
                 ScoreWorth = 20;
@@ -119,14 +143,13 @@ namespace Asteroids_Xbox.Entities
             MaxSpeed = MoveSpeed;
             RotationSpeed = 2.0f;
             WrapScreen = true;
-
         }
 
         /// <summary>
         /// Handle update on gameloop
         /// </summary>
-        /// <param name="inputManager"></param>
-        /// <param name="gameTime"></param>
+        /// <param name="inputManager">The Input manager.</param>
+        /// <param name="gameTime">The current game time.</param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Rotate(RotationSpeed);
@@ -136,9 +159,10 @@ namespace Asteroids_Xbox.Entities
         /// <summary>
         /// Handle collisions
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">The other entity that collided with the asteroid.</param>
         public override void Touch(AnimatedEntity other)
         {
+            /// Check to see if the player got hit.
             if (other is Player)
             {
                 var player = other as Player;

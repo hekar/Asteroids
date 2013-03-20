@@ -1,9 +1,17 @@
+///
+///FILE          : animatedentity.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the animated entity class.
+///                 It handles the entites in the game that are
+///                 animated.
+///
+using System;
 using Asteroids_Xbox.Manager;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using Asteroids_Xbox.Entities;
 
 namespace Asteroids_Xbox.Types
 {
@@ -129,8 +137,8 @@ namespace Asteroids_Xbox.Types
         /// <summary>
         /// Update the entity. This is usually performed in the gameloop
         /// </summary>
-        /// <param name="inputManager"></param>
-        /// <param name="gameTime"></param>
+        /// <param name="inputManager">The input manager</param>
+        /// <param name="gameTime">The current game time</param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
             Animation.Position = Position;
@@ -142,7 +150,7 @@ namespace Asteroids_Xbox.Types
         /// <summary>
         /// Draw the animation to the screen
         /// </summary>
-        /// <param name="spriteBatch"></param>
+        /// <param name="spriteBatch">A sprite batch to draw</param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             Animation.Draw(spriteBatch);
@@ -151,34 +159,30 @@ namespace Asteroids_Xbox.Types
         /// <summary>
         /// Translate or move the entity x and y units
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The x location to move to</param>
+        /// <param name="y">The y location to move to</param>
         public override void Move(float x, float y)
         {
             base.Move(x, y);
-
             if (WrapScreen)
             {
                 var previousPosition = Position;
-                // Make sure that the unit does not go out of bounds, but instead wraps across the screen
+                /// Make sure that the unit does not go out of bounds, but instead wraps across the screen
                 if (Position.X <= 0.0f)
                 {
                     var width = GraphicsDevice.Viewport.Width;
                     Position = new Vector2(width - 1, Position.Y);
                 }
-
                 if (Position.Y <= 0.0f)
                 {
                     var height = GraphicsDevice.Viewport.Height;
                     Position = new Vector2(Position.X, height - 1);
                 }
-
                 Position = new Vector2
                 (
                     Position.X % GraphicsDevice.Viewport.Width,
                     Position.Y % GraphicsDevice.Viewport.Height
                 );
-
                 if (previousPosition != Position)
                 {
                     WrapScreenCount++;
@@ -208,17 +212,6 @@ namespace Asteroids_Xbox.Types
             var inOtherRadius = distance < other.Radius;
             if (inThisRadius || inOtherRadius)
             {
-                // TODO: later after i eat these muffins
-                // and have some ice cream and watch
-                // 50 HOURS OF KDRAMAS OMG, NEW SERIES FOUND GOMG AOSDMF ASDFJKSADJG ASDFOSDMAGOMSDAFKLASDHJFLKASDFKLHASDFAJLSDFHASJKDFHASJDKFHASDKLFHASKJDFHASJKDHKJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJF
-
-                // Perform pixel check now
-                //var area = (this.Bounds.Width * this.Bounds.Height);
-                //var otherArea = (other.Bounds.Width * other.Bounds.Height);
-                //
-                //var smaller = (area > otherArea) ? other : this;
-                //var larger = (area > otherArea) ? this : other;
-                //return PerPixelCollision(smaller, larger);
                 return true;
             }
             else
@@ -228,11 +221,12 @@ namespace Asteroids_Xbox.Types
         }
 
         /// <summary>
-        /// TODO: Implement this
-        /// Reference: http://stackoverflow.com/questions/14024248/implementing-per-pixel-collision-on-rotated-sprites
+        /// Calculate the colission on a per pixel level
+        /// Looks at both pixel colors. If they are not transparent (the alpha channel is not 0), 
+        /// then there is a collision.
         /// </summary>
-        /// <param name="e1"></param>
-        /// <param name="e2"></param>
+        /// <param name="e1">Entity 1</param>
+        /// <param name="e2">Entity 2</param>
         /// <returns></returns>
         private bool PerPixelCollision(AnimatedEntity e1, AnimatedEntity e2)
         {
@@ -245,40 +239,39 @@ namespace Asteroids_Xbox.Types
             var bfh = e2.Animation.FrameHeight;
             var bcd = e2.Animation.ColorData;
 
-            // Get Color data of each Texture
+            /// Get Color data of each Texture
             Color[] bitsA = new Color[afw * afh];
             Color[] bitsB = new Color[bfw * bfh];
 
-            // Calculate the intersecting rectangle
+            /// Calculate the intersecting rectangle
             int x1 = Math.Max(e1.Bounds.X, e2.Bounds.X);
             int x2 = Math.Min(e1.Bounds.X + e1.Bounds.Width, e2.Bounds.X + e2.Bounds.Width);
 
             int y1 = Math.Max(e1.Bounds.Y, e2.Bounds.Y);
             int y2 = Math.Min(e1.Bounds.Y + e1.Bounds.Height, e2.Bounds.Y + e2.Bounds.Height);
 
-            // For each single pixel in the intersecting rectangle
+            /// For each single pixel in the intersecting rectangle
             for (int y = y1; y < y2; ++y)
             {
                 for (int x = x1; x < x2; ++x)
                 {
-                    // Get the color from each texture
+                    /// Get the color from each texture
                     Color a = bitsA[(x - e1.Bounds.X) + (y - e1.Bounds.Y) * afw];
                     Color b = bitsB[(x - e2.Bounds.X) + (y - e2.Bounds.Y) * bfw];
 
-                    // If both colors are not transparent (the alpha channel is not 0), then there is a collision
+                    /// If both colors are not transparent (the alpha channel is not 0), then there is a collision
                     if (a.A != 0 && b.A != 0)
                     {
                         return true;
                     }
                 }
             }
-            // If no collision occurred by now, we're clear.
+            /// If no collision occurred by now, we're clear.
             return false;
         }
 
         /// <summary>
         /// Handle a touch event with another entity.
-        /// 
         /// This occurs when two entities collide
         /// </summary>
         /// <param name="other">The other entity that has been collided with</param>

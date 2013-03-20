@@ -1,3 +1,11 @@
+///
+///FILE          : titlescreen.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the class that makes up the title screen.
+///                 This handles the help screen and any other screens
+///
 using System.Collections.Generic;
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
@@ -22,8 +30,6 @@ namespace Asteroids_Xbox.Entities
 
     /// <summary>
     /// Display and process the titlescreen
-    /// 
-    /// TODO: Implement gameover screen
     /// </summary>
     class Titlescreen : AnimatedEntity
     {
@@ -31,14 +37,14 @@ namespace Asteroids_Xbox.Entities
         /// Player
         /// </summary>
         public Player Player { get; set; }
-
         /// <summary>
         /// Titlescreen status
         /// </summary>
         public TitlescreenStatus TitlescreenStatus { get; set; }
-
+        /// <summary>
+        /// The visible
+        /// </summary>
         private bool visible;
-
         /// <summary>
         /// Is the titlescreen currently visible
         /// </summary>
@@ -58,71 +64,96 @@ namespace Asteroids_Xbox.Entities
                 }
             }
         }
-
         /// <summary>
-        /// This property is a hack. Basically is a new game being requested by the titlescreen
+        /// Is a new game being requested by the titlescreen?
         /// </summary>
         public bool NewGameRequested { get; set; }
-
         /// <summary>
-        /// Is the titlescreen asking for an exit
+        /// Is the titlescreen asking for an exit?
         /// </summary>
         public bool ExitRequested { get; private set; }
-
+        /// <summary>
+        /// The font
+        /// </summary>
         private SpriteFont font;
+        /// <summary>
+        /// The menu song
+        /// </summary>
         private Song menuSong;
+        /// <summary>
+        /// The game song
+        /// </summary>
         private Song gameSong;
+        /// <summary>
+        /// Are we using a gamepad?
+        /// </summary>
         private bool isGamepad;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Titlescreen"/> class.
+        /// </summary>
+        /// <param name="player">The player.</param>
         public Titlescreen(Player player)
         {
             this.Player = player;
         }
 
+        /// <summary>
+        /// On Loading of content
+        /// </summary>
+        /// <param name="content"></param>
         public override void Load(ContentManager content)
         {
             NewGameRequested = false;
             ExitRequested = false;
             TitlescreenStatus = TitlescreenStatus.Start;
+            /// Load up the game font
             font = content.Load<SpriteFont>("gameFont");
-
+            /// Load the songs for the game
             menuSong = content.Load<Song>("sound/menuMusic");
             gameSong = content.Load<Song>("sound/gameMusic");
-
+            /// Load the main menu texture
             var texture = content.Load<Texture2D>("mainMenu");
             Animation.Initialize(texture, Vector2.Zero, texture.Width, texture.Height, 1, 30, Color.White, 1f, true);
-
             MoveSpeed = 8.0f;
             MaxSpeed = 10.0f;
             RotationSpeed = 5.0f;
             CurrentSpeed = Vector2.Zero;
             WrapScreen = true;
-
             Position = new Vector2(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y);
         }
 
-        private void PlayMusic(Song song)
+        /// <summary>
+        /// Plays the music.
+        /// </summary>
+        /// <param name="music">The music.</param>
+        private void PlayMusic(Song music)
         {
-            // Due to the way the MediaPlayer plays music,
-            // we have to catch the exception. Music will play when the game is not tethered
+            /// Due to the way the MediaPlayer plays music,
+            /// we have to catch the exception. Music will play when the game is not tethered
             try
             {
                 MediaPlayer.Stop();
-                // Play the music
-                MediaPlayer.Play(song);
+                /// Play the music
+                MediaPlayer.Play(music);
 
-                // Loop the currently playing song
+                /// Loop the currently playing song
                 MediaPlayer.IsRepeating = true;
             }
             catch 
             {
-                // Ignore...
+                /// Ignore...
             }
         }
 
+        /// <summary>
+        /// Update the entity. This is usually performed in the gameloop
+        /// </summary>
+        /// <param name="inputManager"></param>
+        /// <param name="gameTime"></param>
         public override void Update(InputManager inputManager, GameTime gameTime)
         {
-            // Handle controls
+            /// Handle controls
             var keyboard = inputManager.CurrentKeyboardState;
             var gamepad = inputManager.CurrentGamePadState;
 
@@ -143,12 +174,12 @@ namespace Asteroids_Xbox.Entities
                 {
                     if (Player.Alive)
                     {
-                        // Resume game
+                        /// Resume game
                         Visible = false;
                     }
                     else
                     {
-                        // Start new game
+                        /// Start new game
                         Visible = false;
                         NewGameRequested = true;
                     }
@@ -171,10 +202,15 @@ namespace Asteroids_Xbox.Entities
             base.Update(inputManager, gameTime);
         }
 
+        /// <summary>
+        /// Draw the animation to the screen
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-
+            /// Depending on the title screen status, display the appropriate
+            /// content.
             switch (TitlescreenStatus)
             {
                 case TitlescreenStatus.Start:
@@ -200,6 +236,10 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
+        /// <summary>
+        /// Writes the help page to the screen.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
         private void WriteHelp(SpriteBatch spriteBatch)
         {
             List<string> texts = new List<string>();
@@ -235,6 +275,8 @@ namespace Asteroids_Xbox.Entities
             }
 
             int i = 1;
+            /// Dynamically write text based on how many lines have
+            /// been written
             foreach (var line in texts)
             {
                 var offset = font.MeasureString(line);
@@ -248,6 +290,11 @@ namespace Asteroids_Xbox.Entities
             }
         }
 
+        /// <summary>
+        /// Writes the title.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="text">The text.</param>
         private void WriteTitle(SpriteBatch spriteBatch, string text)
         {
             var offset = font.MeasureString(text);
@@ -260,6 +307,11 @@ namespace Asteroids_Xbox.Entities
             spriteBatch.DrawString(font, text, pos, Color.Green);
         }
 
+        /// <summary>
+        /// Writes the sub title.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="text">The text.</param>
         private void WriteSubTitle(SpriteBatch spriteBatch, string text)
         {
             var offset = font.MeasureString(text);
@@ -272,6 +324,11 @@ namespace Asteroids_Xbox.Entities
             spriteBatch.DrawString(font, text, pos, Color.White);
         }
 
+        /// <summary>
+        /// Writes the sub sub title.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch.</param>
+        /// <param name="text">The text.</param>
         private void WriteSubSubTitle(SpriteBatch spriteBatch, string text)
         {
             var offset = font.MeasureString(text);

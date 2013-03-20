@@ -1,9 +1,16 @@
+///
+///FILE          : enemyship.cs
+///PROJECT       : Asteroids
+///PROGAMMER     : Stephen Davis/Hekar Khani
+///FIRST VERSION : Mar 19th 2013
+///DESCRIPTION   : This is the class that makes up the enemy ships
+///
+using System;
 using Asteroids_Xbox.Manager;
 using Asteroids_Xbox.Types;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace Asteroids_Xbox.Entities
 {
@@ -12,29 +19,63 @@ namespace Asteroids_Xbox.Entities
     /// </summary>
     class EnemyShip : AnimatedEntity
     {
+        /// <summary>
+        /// The entity manager
+        /// </summary>
         private readonly EntityManager entityManager;
+        /// <summary>
+        /// A random number generator
+        /// </summary>
         private readonly Random random;
+        /// <summary>
+        /// The background color
+        /// </summary>
         private readonly Color BackgroundColor = Color.White;
-
+        /// <summary>
+        /// The enemy explosion texture name
+        /// </summary>
         private const string EnemyExplosionTextureName = "Ship_Explode";
-
         /// <summary>
         /// Time between bullet fire times
         /// </summary>
         private const double bulletFireTime = 2.0;
-
         /// <summary>
         /// Size of the enemy ship
         /// </summary>
         public Sizes Size { get; set; }
-
+        /// <summary>
+        /// The enemy texture
+        /// </summary>
         private Texture2D enemyTexture;
+        /// <summary>
+        /// The seconds since the last spawn
+        /// </summary>
         private double previousSeconds;
+        /// <summary>
+        /// The speed of the ship
+        /// </summary>
         private Vector2 speed;
+        /// <summary>
+        /// The player
+        /// </summary>
         private Player player;
+        /// <summary>
+        /// The current game time
+        /// </summary>
         private GameTime gameTime;
+        /// <summary>
+        /// The content
+        /// </summary>
         private ContentManager content;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnemyShip"/> class.
+        /// </summary>
+        /// <param name="entityManager">The entity manager.</param>
+        /// <param name="position">The ship position.</param>
+        /// <param name="speed">The ship speed.</param>
+        /// <param name="size">The ship size.</param>
+        /// <param name="player">The player.</param>
         public EnemyShip(EntityManager entityManager, Vector2 position, Vector2 speed, Sizes size, Player player)
         {
             this.entityManager = entityManager;
@@ -52,6 +93,7 @@ namespace Asteroids_Xbox.Entities
         public override void Load(ContentManager content)
         {
             this.content = content;
+            /// Figure out if it is a small or large ship
             switch (this.Size)
             {
                 case Sizes.Small:
@@ -67,12 +109,10 @@ namespace Asteroids_Xbox.Entities
                     Animation.Initialize(enemyTexture, Vector2.Zero, 75, 30, 8, 45, BackgroundColor, 1f, true);
                     break;
             }
-
             MaxSpeed = 5.0f;
             MoveSpeed = 5.0f;
             WrapScreen = true;
         }
-
 
         /// <summary>
         /// Update the ship on the game loop
@@ -83,13 +123,10 @@ namespace Asteroids_Xbox.Entities
         {
             this.gameTime = gameTime;
             Move(speed.X, speed.Y);
-
             Move(0, random.Next(-1, 1));
-
             var vec = new Vector2((float)random.Next(-(int)MaxSpeed, (int)MaxSpeed), (float)random.Next(-(int)MaxSpeed, (int)MaxSpeed));
             vec.Normalize();
             FireBullet(vec);
-
             base.Update(inputManager, gameTime);
         }
 
